@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Event Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <a href="https://tzerone-giveaway-03.netlify.app/" class="nav-switcher-btn">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2v2H8v-2H6v-2h2V8h2v2h2v2zm4 4h-6v-2h6v2zm0-4h-2v-2h2v2z"/></svg>
+        Lucky Draw
+    </a>
+
+    <div id="global-page-loader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <div id="custom-alert-overlay" class="modal-overlay hidden">
+        <div id="custom-alert-box" class="modal-box-card custom-popup-card">
+            <div id="custom-alert-icon" class="popup-icon"></div>
+            <h3 id="custom-alert-title">NOTICE</h3>
+            <p id="custom-alert-message" class="modal-body-text"></p>
+            <div class="dual-btn-row top-space-btn" id="custom-alert-buttons"></div>
+        </div>
+    </div>
+
+    <div id="admin-auth-overlay" class="modal-overlay">
+        <div class="modal-box-card credential-box">
+            <h3>🔒 SECURITY AUTHORIZATION</h3>
+            <p style="font-size: 0.8rem; color: #A5A6B9; margin-bottom: 15px;">Session will auto-terminate upon closing this window.</p>
+            <div class="form-group">
+                <input type="email" id="auth-email" placeholder="ADMIN EMAIL" autocomplete="off">
+            </div>
+            <div class="form-group" style="position: relative;">
+                <input type="password" id="auth-password" placeholder="PASSWORD">
+                <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility()">
+                    <svg id="eye-icon-open" class="hidden" viewBox="0 0 24 24" width="20" height="20" fill="#A5A6B9"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    <svg id="eye-icon-closed" viewBox="0 0 24 24" width="20" height="20" fill="#A5A6B9"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                </button>
+            </div>
+            <div class="auth-btn-wrapper">
+                <button class="btn btn-action-green btn-sm" onclick="verifyAdminGatewayCredentials()">LOGIN</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-panel-view" class="admin-layout hidden">
+        <header class="admin-header-bar">
+            <h1 class="admin-title-panel">ADMIN PANEL</h1>
+        </header>
+
+        <nav class="admin-tabs-nav">
+            <button class="tab-btn active" onclick="switchAdminTab('tab-prize-management')">Prize Management</button>
+            <button class="tab-btn" onclick="switchAdminTab('tab-approvals')">Approval Board</button>
+            <button class="tab-btn" onclick="switchAdminTab('tab-archive')">Archive Folder</button>
+            <button class="tab-btn" onclick="switchAdminTab('tab-winner-history')">Winner History</button>
+            <button class="tab-btn" onclick="switchAdminTab('tab-event-control')">Event Control</button>
+        </nav>
+
+        <section id="tab-prize-management" class="admin-tab-content active">
+            <div class="admin-card-surface">
+                <nav class="public-tabs-nav" style="margin-bottom: 25px;">
+                    <button class="p-tab-btn active" onclick="switchPrizeSubTab('sub-latest-prize')">Latest Prize</button>
+                    <button class="p-tab-btn" onclick="switchPrizeSubTab('sub-past-prize')">Past Prize</button>
+                </nav>
+
+                <div id="sub-latest-prize" class="prize-sub-tab active">
+                    <h2 class="sub-section-title">LATEST PRIZE</h2>
+                    <div class="admin-prize-preview-block">
+                        <img id="admin-prize-preview-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Preview image" class="img-loading" onload="this.classList.remove('img-loading')">
+                        <p id="admin-prize-preview-cap">Loading...</p>
+                    </div>
+                    
+                    <div class="cloudinary-upload-wrapper">
+                        <label class="input-tag-label">Upload New Image (Auto-replaces old image)</label>
+                        <div class="upload-dropzone" id="upload-dropzone-latest">
+                            <input type="file" id="admin-input-img-file" accept="image/*" class="hidden-file-input" onchange="handleCloudinaryUpload(this, 'latest')">
+                            <div class="upload-ui-elements">
+                                <svg viewBox="0 0 24 24" width="48" height="48" fill="#C1E1FF"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                                <p class="upload-primary-text">Drag & Drop or Click to Upload</p>
+                                <p class="upload-secondary-text">PNG, JPG up to 10MB</p>
+                            </div>
+                        </div>
+                        <div id="upload-progress-latest" class="upload-progress-container hidden">
+                            <div class="progress-bar-track"><div id="progress-bar-fill-latest" class="progress-bar-fill"></div></div>
+                            <div class="progress-stats">
+                                <span id="progress-percent-latest">0%</span>
+                                <span id="progress-speed-latest">0 KB/s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group top-space-btn">
+                        <label class="input-tag-label">Edit Caption</label>
+                        <input type="text" id="admin-input-caption" placeholder="Enter target prize caption text...">
+                    </div>
+                    <div class="dual-btn-row">
+                        <button class="btn btn-action-green btn-success-action" style="width:100%" onclick="saveActivePrizeData()">SAVE CHANGES</button>
+                    </div>
+                </div>
+
+                <div id="sub-past-prize" class="prize-sub-tab hidden">
+                    <h2 class="sub-section-title">PAST PRIZE</h2>
+                    <div class="admin-prize-preview-block">
+                        <img id="admin-past-prize-preview-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Past Preview image" class="img-loading" onload="this.classList.remove('img-loading')">
+                        <p id="admin-past-prize-preview-cap">Loading...</p>
+                    </div>
+                    
+                    <div class="cloudinary-upload-wrapper">
+                        <label class="input-tag-label">Upload New Past Image (Auto-replaces old image)</label>
+                        <div class="upload-dropzone" id="upload-dropzone-past">
+                            <input type="file" id="admin-input-past-img-file" accept="image/*" class="hidden-file-input" onchange="handleCloudinaryUpload(this, 'past')">
+                            <div class="upload-ui-elements">
+                                <svg viewBox="0 0 24 24" width="48" height="48" fill="#C1E1FF"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                                <p class="upload-primary-text">Drag & Drop or Click to Upload</p>
+                                <p class="upload-secondary-text">PNG, JPG up to 10MB</p>
+                            </div>
+                        </div>
+                        <div id="upload-progress-past" class="upload-progress-container hidden">
+                            <div class="progress-bar-track"><div id="progress-bar-fill-past" class="progress-bar-fill"></div></div>
+                            <div class="progress-stats">
+                                <span id="progress-percent-past">0%</span>
+                                <span id="progress-speed-past">0 KB/s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group top-space-btn">
+                        <label class="input-tag-label">Edit Past Caption</label>
+                        <input type="text" id="admin-input-past-caption" placeholder="Enter past prize caption text...">
+                    </div>
+                    <div class="dual-btn-row">
+                        <button class="btn btn-action-green btn-success-action" style="width:100%" onclick="saveActivePastPrizeData()">SAVE CHANGES</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-approvals" class="admin-tab-content">
+            <div class="admin-card-surface">
+                <div class="approval-header-flex">
+                    <h2 class="sub-section-title" style="margin-bottom:0;">APPROVAL BOARD</h2>
+                    <button class="circle-action-btn" title="System History" onclick="openHistoryPopup()" style="background: rgba(255,255,255,0.1);">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="#FFF"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+                    </button>
+                </div>
+                
+                <div class="approval-board-scroll-container fixed-height-scroll">
+                    <table class="admin-data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Phone Number</th>
+                                <th>Game ID</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-approval-table-body">
+                        </tbody>
+                    </table>
+                </div>
+
+                <hr class="deep-divider">
+
+                <div class="approval-footer-actions">
+                    <button class="btn uniform-admin-btn" onclick="wipeAllSubmissionsSeason()">REMOVE ALL</button>
+                    <button class="btn uniform-admin-btn accept-uniform" onclick="acceptAllApprovals()">ACCEPT ALL</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-archive" class="admin-tab-content">
+            <div class="admin-card-surface">
+                <h2 class="sub-section-title">ARCHIVE FOLDER (Lucky Winners Under Review)</h2>
+                <div class="approval-board-scroll-container fixed-height-scroll">
+                    <table class="admin-data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Game ID</th>
+                                <th>Phone Number</th>
+                                <th>Date Won</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-archive-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-winner-history" class="admin-tab-content">
+            <div class="admin-card-surface">
+                <h2 class="sub-section-title">PAST WINNERS HISTORY</h2>
+                <div class="approval-board-scroll-container fixed-height-scroll">
+                    <table class="admin-data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Name</th>
+                                <th>Game ID</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-history-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-event-control" class="admin-tab-content">
+            <div class="admin-card-surface modern-event-card text-center">
+                <h2 class="event-title-pro">EVENT STATUS CONTROL</h2>
+                <p class="event-desc-pro">Opening or closing the event determines if users can submit new entries to the database. Real-time synchronization is active.</p>
+                
+                <div class="status-badge-container-pro" id="current-event-status-badge">STATUS: LOADING...</div>
+                
+                <div class="dual-btn-row event-control-actions">
+                    <button class="btn btn-danger-action btn-event" onclick="setEventStatus('closed')">
+                        <span>END EVENT</span>
+                    </button>
+                    <button class="btn btn-action-green btn-event" onclick="setEventStatus('open')">
+                        <span>START EVENT</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="history-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-box-card" style="max-width: 500px; max-height: 85vh; display: flex; flex-direction: column;">
+            <button class="close-modal-btn" onclick="closeHistoryPopup()">✕</button>
+            <h3 style="margin-bottom: 5px;">SYSTEM HISTORY LOGS</h3>
+            <p style="text-align:center; color:#A5A6B9; font-size:0.85rem; margin-bottom: 20px;">Review or export categorized records.</p>
+            
+            <nav class="public-tabs-nav" style="margin-bottom: 15px;">
+                <button class="p-tab-btn active" onclick="switchHistoryLogTab('log-approved')">Approved</button>
+                <button class="p-tab-btn" onclick="switchHistoryLogTab('log-removed')">Removed</button>
+                <button class="p-tab-btn" onclick="switchHistoryLogTab('log-winners')">Winners</button>
+            </nav>
+
+            <div class="history-log-content active" id="log-approved">
+                <div class="players-scroller" id="list-log-approved"></div>
+                <div class="dual-btn-row top-space-btn">
+                    <button class="btn btn-danger-action btn-sm" onclick="clearSpecificLog('approved')">DELETE LOG</button>
+                    <button class="btn btn-success-action btn-sm" onclick="exportSpecificLog('approved')">DOWNLOAD (TXT)</button>
+                </div>
+            </div>
+
+            <div class="history-log-content hidden" id="log-removed">
+                <div class="players-scroller" id="list-log-removed"></div>
+                <div class="dual-btn-row top-space-btn">
+                    <button class="btn btn-danger-action btn-sm" onclick="clearSpecificLog('rejected')">DELETE LOG</button>
+                    <button class="btn btn-success-action btn-sm" onclick="exportSpecificLog('rejected')">DOWNLOAD (TXT)</button>
+                </div>
+            </div>
+
+            <div class="history-log-content hidden" id="log-winners">
+                <div class="players-scroller" id="list-log-winners"></div>
+                <div class="dual-btn-row top-space-btn">
+                    <button class="btn btn-danger-action btn-sm" onclick="clearWinnerLog()">DELETE LOG</button>
+                    <button class="btn btn-success-action btn-sm" onclick="exportWinnerLog()">DOWNLOAD (TXT)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, collection, getDocs, updateDoc, deleteDoc, query, onSnapshot, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAoketoRHRp4ko6zDr5nDN62EuvBluF0SE",
+            authDomain: "tzerone-giveaway.firebaseapp.com",
+            projectId: "tzerone-giveaway",
+            storageBucket: "tzerone-giveaway.firebasestorage.app",
+            messagingSenderId: "79301530556",
+            appId: "1:79301530556:web:4290ce069b76b9cd4ad1b9",
+            measurementId: "G-E738EB97XK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        window.FirebaseBridge = { db, auth, doc, setDoc, collection, getDocs, updateDoc, deleteDoc, query, onSnapshot, where, signInWithEmailAndPassword, setPersistence, browserSessionPersistence };
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
