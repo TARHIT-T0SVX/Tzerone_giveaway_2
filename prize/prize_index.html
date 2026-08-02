@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" class="session-checking">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Panel 1 - Prize</title>
+    <link rel="stylesheet" href="prize_styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Pre-fetch Home / Edit so the bottom-nav swipe feels instantaneous. -->
+    <link rel="prefetch" href="../index.html" as="document">
+    <link rel="prefetch" href="../styles.css" as="style">
+    <link rel="prefetch" href="../script.js" as="script">
+    <link rel="prefetch" href="../edit/edit_index.html" as="document">
+    <link rel="prefetch" href="../edit/edit_styles.css" as="style">
+    <link rel="prefetch" href="../edit/edit_script.js" as="script">
+</head>
+<body>
+
+<!-- Cross-console switcher: jumps to the Lucky Draw operator console.
+     (This previously pointed at the Admin Panel's own URL, so it was a dead self-link.) -->
+<a href="https://tzerone-giveaway-03.netlify.app/" class="nav-switcher-btn" title="Open Lucky Draw console">
+    <svg viewBox="0 0 24 24">
+        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+    </svg>
+   
+</a>
+
+    <div id="custom-alert-overlay" class="modal-overlay hidden">
+        <div id="custom-alert-box" class="modal-box-card custom-popup-card">
+            <div id="custom-alert-icon" class="popup-icon"></div>
+            <h3 id="custom-alert-title">NOTICE</h3>
+            <p id="custom-alert-message" class="modal-body-text"></p>
+            <div class="dual-btn-row top-space-btn" id="custom-alert-buttons"></div>
+        </div>
+    </div>
+
+    <div id="link-input-overlay" class="modal-overlay hidden">
+        <div class="modal-box-card">
+            <h3>PASTE IMAGE LINK</h3>
+            <p class="modal-body-text">Paste a direct GitHub raw (or any hosted) image URL.</p>
+            <div class="form-group top-space-btn">
+                <input type="text" id="link-input-field" placeholder="https://raw.githubusercontent.com/">
+            </div>
+            <div class="dual-btn-row">
+                <button class="btn btn-secondary-soft btn-sm" onclick="cancelLinkInput()">CANCEL</button>
+                <button class="btn btn-action-green btn-sm" onclick="confirmLinkInput()">APPLY LINK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-panel-view" class="admin-layout hidden">
+
+        <header class="admin-header-bar">
+            <h1 class="admin-title-panel">ADMIN PANEL 1</h1>
+        </header>
+
+        <div class="bottom-tab-content active">
+            <div class="home-section-card">
+                <nav class="segmented-tabs" id="grandprizes-primary-tabs">
+                    <button class="segment-btn active" onclick="switchGrandPrizesPrimaryTab('gallery')">PRIZE GALLERY</button>
+                    <button class="segment-btn" onclick="switchGrandPrizesPrimaryTab('new')">PRIZE POOL</button>
+                </nav>
+            </div>
+
+            <div id="grandprizes-view-gallery" class="grandprizes-primary-view active top-space-btn">
+                <div class="home-section-card">
+                    <div class="section-title-bar">PRIZE GALLERY</div>
+
+                    <nav class="segmented-tabs" id="gallery-primary-tabs">
+                        <button class="segment-btn active" onclick="switchGalleryPrimaryTab('current')">CURRENT PRIZE</button>
+                        <button class="segment-btn" onclick="switchGalleryPrimaryTab('end')">END PRIZE</button>
+                    </nav>
+
+                    <input type="file" id="grand-prize-file-shared" accept="image/*" class="hidden-file-input-offscreen" onchange="handleGrandPrizeFileChosen(this)">
+                    <input type="file" id="end-prize-file-shared" accept="image/*" class="hidden-file-input-offscreen" onchange="handleEndPrizeFileChosen(this)">
+
+                    <div id="gallery-view-current" class="gallery-sub-view active top-space-btn">
+                        <div id="grand-prizes-list-container" class="past-prize-list"></div>
+                        <button class="btn btn-secondary-soft add-grandprize-btn top-space-btn" onclick="addNewGrandPrizeCard()">ADD MORE</button>
+                    </div>
+
+                    <div id="gallery-view-end" class="gallery-sub-view hidden top-space-btn">
+                        <div id="end-prizes-list-container" class="past-prize-list"></div>
+                        <button class="btn btn-secondary-soft add-grandprize-btn top-space-btn" onclick="addNewEndPrizeCard()">ADD MORE</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="grandprizes-view-new" class="grandprizes-primary-view hidden top-space-btn">
+                <div class="home-section-card">
+                    <nav class="segmented-tabs" id="grandprizes-sub-tabs">
+                        <button class="segment-btn active" onclick="switchGrandPrizesSubTab('rate')">PRIZE RATE</button>
+                        <button class="segment-btn" onclick="switchGrandPrizesSubTab('archive')">PRIZE ARCHIVE</button>
+                    </nav>
+                </div>
+
+                <!-- PRIZE RATE PANEL: Grand Prizes (discrete presets) / Custom Prizes (manual + tag) -->
+                <div id="prizerate-panel-rate" class="prizerate-sub-panel top-space-btn">
+                    <div class="home-section-card">
+                        <div class="section-title-bar">PRIZE RATE</div>
+
+                        <!-- LIVE DROP-RATE TOTAL
+                             Grand Prizes and No Prize slots draw from ONE shared 0-100%
+                             range, so the total has to be visible across both tabs at once.
+                             From either tab alone it is impossible to tell whether the board
+                             is under-allocated (the leftover % becomes a real miss) or
+                             over-allocated (every rate gets scaled down proportionally).
+                             Populated live by renderDropRateTotal() in prize_script.js. -->
+                        <div id="drop-rate-total-box" class="drop-rate-total-box">
+                            <div class="drop-rate-total-head">
+                                <span class="drop-rate-total-label">TOTAL DROP RATE</span>
+                                <span id="drop-rate-total-value" class="drop-rate-total-value">0%</span>
+                            </div>
+                            <div class="drop-rate-total-track">
+                                <div id="drop-rate-total-fill" class="drop-rate-total-fill"></div>
+                            </div>
+                            <p id="drop-rate-total-note" class="drop-rate-total-note"></p>
+                        </div>
+
+                        <nav class="segmented-tabs" id="prizerate-inner-tabs">
+                            <button class="segment-btn active" onclick="switchPrizeRateInnerTab('grand')">GRAND PRIZES</button>
+                            <button class="segment-btn" onclick="switchPrizeRateInnerTab('custom')">NO PRIZE</button>
+                        </nav>
+
+                        <input type="file" id="custom-prize-file-shared" accept="image/*" class="hidden-file-input-offscreen" onchange="handleCustomPrizeFileChosen(this)">
+
+                        <div id="prizerate-view-grand" class="prizerate-inner-view active top-space-btn">
+                            <div id="grand-prizes-rate-list-container" class="past-prize-list"></div>
+                            <button class="btn btn-secondary-soft add-grandprize-btn top-space-btn" onclick="addNewGrandPrizeCard()">ADD MORE</button>
+                        </div>
+
+                        <div id="prizerate-view-custom" class="prizerate-inner-view hidden top-space-btn">
+                            <div id="custom-prizes-list-container" class="past-prize-list"></div>
+                            <button class="btn btn-secondary-soft add-grandprize-btn top-space-btn" onclick="addNewCustomPrizeCard()">ADD MORE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRIZE ARCHIVE PANEL: read-only realtime log, no dashed placeholder styling -->
+                <div id="prizerate-panel-archive" class="prizerate-sub-panel hidden top-space-btn">
+                    <div class="home-section-card">
+                        <div class="section-title-bar">PRIZE ARCHIVE</div>
+                        <div id="prize-archive-list-container" class="prize-archive-list top-space-btn"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="bottom-nav-bar">
+            <a class="bottom-nav-btn" id="bottom-nav-home" href="../index.html" title="Home">
+                <svg viewBox="0 0 48 48" width="24" height="24" fill="currentColor"><path d="M24,2a1.1,1.1,0,0,0-.7.3L4.6,19.2A2,2,0,0,0,4,20.7V44H19V27.9H29V44H44V20.7a2,2,0,0,0-.6-1.5L24.7,2.3A1.1,1.1,0,0,0,24,2Z"/></svg>
+            </a>
+            <a class="bottom-nav-btn" id="bottom-nav-edit" href="../edit/edit_index.html" title="Edit">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </a>
+            <a class="bottom-nav-btn active" id="bottom-nav-grandprizes" href="prize_index.html" title="Prize">
+                <svg viewBox="0 0 31.945 31.945" width="24" height="24" fill="currentColor"><path d="M20.036,19.832c8.371-4.185,12.262-7.969,11.884-11.546c-0.309-2.934-3.354-4.633-5.473-5.471 c0.021-0.32,0.031-0.618,0.031-0.903c0-0.067-21.041-0.034-21.041,0.033c0,0.278,0.011,0.572,0.031,0.887 C3.358,3.67,0.333,5.366,0.025,8.288c-0.377,3.57,3.498,7.343,11.835,11.522c0.462,0.523,0.941,0.979,1.434,1.343l-0.531,5.454 c-1.541,0.148-2.782,0.387-3.628,0.591C8.31,27.395,7.7,28.132,7.7,28.98v1.09h16.474v-1.104c0-0.845-0.604-1.58-1.425-1.785 c-0.839-0.207-2.062-0.441-3.619-0.59l-0.504-5.441C19.109,20.793,19.581,20.347,20.036,19.832z M26.111,5.422 c1.527,0.693,3.164,1.77,3.306,3.132c0.098,0.928-0.479,3.234-6.575,6.887C24.396,12.266,25.556,8.506,26.111,5.422z M8.667,3.629 c0.638,0,1.154,0.515,1.154,1.152c0,0.637-0.516,1.154-1.154,1.154S7.513,5.418,7.513,4.781C7.513,4.143,8.029,3.629,8.667,3.629z M2.528,8.553c0.142-1.354,1.76-2.425,3.279-3.12c0.554,3.071,1.705,6.815,3.254,9.98C3.005,11.777,2.433,9.478,2.528,8.553z M12.856,16.541c-0.146,0.062-0.297,0.09-0.445,0.09c-0.454,0-0.885-0.27-1.07-0.715c-1.485-3.562-2.781-7.562-2.835-7.73 c-0.197-0.61,0.136-1.264,0.746-1.46c0.611-0.199,1.262,0.137,1.458,0.744c0.014,0.041,1.323,4.082,2.769,7.555 C13.726,15.615,13.447,16.295,12.856,16.541z"/></svg>
+            </a>
+        </nav>
+
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, updateDoc, deleteDoc, query, onSnapshot, where, writeBatch, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAoketoRHRp4ko6zDr5nDN62EuvBluF0SE",
+            authDomain: "tzerone-giveaway.firebaseapp.com",
+            projectId: "tzerone-giveaway",
+            storageBucket: "tzerone-giveaway.firebasestorage.app",
+            messagingSenderId: "79301530556",
+            appId: "1:79301530556:web:4290ce069b76b9cd4ad1b9",
+            measurementId: "G-E738EB97XK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        window.FirebaseBridge = { db, auth, doc, getDoc, setDoc, collection, addDoc, getDocs, updateDoc, deleteDoc, query, onSnapshot, where, writeBatch, runTransaction, onAuthStateChanged, signInWithEmailAndPassword, setPersistence, browserSessionPersistence };
+    </script>
+    <script type="module" src="prize_script.js"></script>
+</body>
+</html>

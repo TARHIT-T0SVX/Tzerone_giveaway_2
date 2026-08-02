@@ -1,0 +1,690 @@
+/* =====================================================================
+   RESET / GLOBAL
+===================================================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent !important; }
+*:focus { outline: none !important; box-shadow: none; }
+
+html, body { height: 100%; }
+html {
+    scroll-behavior: smooth;
+    background: linear-gradient(180deg, #2D2D48 0%, #1A1A2E 100%);
+    background-color: #1A1A2E;
+    min-height: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+}
+/* background-attachment:fixed intentionally removed: on mobile browsers it can fail to
+   extend/repaint across dynamically-growing content (lists, tables), leaving a raw white
+   gap exposed below the last painted frame once the page scrolls past that height. The
+   gradient background on both html and body now scrolls naturally with the document, and
+   the solid background-color fallback guarantees the dark theme fills every pixel of the
+   scrollable area regardless of content height, orientation, or dynamic list growth. */
+body { font-family: 'Poppins', sans-serif; font-weight: 700; background: linear-gradient(180deg, #2D2D48 0%, #1A1A2E 100%); background-color: #1A1A2E; color: #FFFFFF; min-height: 100vh; min-height: 100dvh; overflow-x: hidden; overscroll-behavior-y: none; display: flex; justify-content: center; align-items: flex-start; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+button, input, select { font-family: 'Poppins', sans-serif; }
+button { cursor: pointer; touch-action: manipulation; }
+.section-scroll-box, .past-prize-list, .home-section-card, .modal-box-card, .bottom-nav-bar { will-change: transform; transform: translateZ(0); -webkit-overflow-scrolling: touch; }
+/* Every interactive surface gets GPU-composited, high-refresh-friendly transitions
+   instead of layout-triggering ones, so taps/animations stay smooth on 90Hz/120Hz displays. */
+.btn, .grid-nav-btn, .segment-btn, .circle-action-btn, .bottom-nav-btn, .image-action-btn, .ratio-toggle-btn, .past-toolbar-btn, .icon-mini-btn { will-change: transform; transform: translateZ(0); backface-visibility: hidden; }
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+/* Lock scroll gestures to a single linear axis so cards/tables track the finger cleanly
+   instead of drifting diagonally or feeling loose/circular. */
+.section-scroll-box { touch-action: pan-y; overscroll-behavior-y: contain; }
+.data-table-wrap { touch-action: pan-x pan-y; overscroll-behavior: contain; }
+.past-prize-list { touch-action: pan-y; }
+
+img.img-loading { animation: skeletonPulse 1.5s infinite ease-in-out; background: linear-gradient(90deg, #252538 25%, #34344e 50%, #252538 75%); background-size: 200% 100%; color: transparent; min-height: 90px; background-color: #2D2D48; }
+@keyframes skeletonPulse { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+.hidden { display: none !important; }
+.text-center { text-align: center !important; }
+.deep-divider { border: none; height: 1px; background: rgba(255, 255, 255, 0.1); margin: 22px 0; }
+
+/* ===================== BUTTONS ===================== */
+/* ===================== BUTTONS ===================== */
+.btn { font-weight: 800; border: none; border-radius: 24px; padding: 15px 35px; font-size: 1.1rem; cursor: pointer; text-align: center; transition: transform 0.12s cubic-bezier(.4,0,.2,1), background 0.2s ease, box-shadow 0.2s ease; display: inline-block; letter-spacing: 0.5px; will-change: transform; }
+.btn:active { transform: scale(0.94) !important; box-shadow: none !important; }
+.btn-action-green { background-color: #34C759; color: #FFFFFF; box-shadow: 0 6px 25px rgba(52, 199, 89, 0.35); min-width: 150px; }
+.btn-action-green:hover:not(:disabled) { background-color: #30D158; box-shadow: 0 8px 30px rgba(52, 199, 89, 0.5); }
+.btn-secondary-soft { background-color: rgba(255, 255, 255, 0.1); color: #E2E2EC; border: 1px solid rgba(255, 255, 255, 0.15); width: 100%; }
+.btn-secondary-soft:hover { background-color: rgba(255, 255, 255, 0.15); color: #FFF; }
+.btn-danger-action { background-color: #FF3B30; color: #FFFFFF; box-shadow: 0 6px 22px rgba(255, 59, 48, 0.35); }
+.btn-danger-action:hover:not(:disabled) { background-color: #FF4F45; box-shadow: 0 8px 28px rgba(255,59,48,0.5); }
+.btn-success-action { background-color: #34C759; color: #FFFFFF; box-shadow: 0 6px 22px rgba(52, 199, 89, 0.35); }
+.btn-success-action:hover:not(:disabled) { background-color: #4CD964; box-shadow: 0 8px 28px rgba(52,199,89,0.5); }
+.btn-sm { padding: 10px 20px; font-size: 0.9rem; border-radius: 14px; }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.btn-footer { flex: 1; padding: 16px 10px !important; font-size: 1rem; border-radius: 16px !important; text-transform: uppercase; }
+.btn-login { width: 100%; padding: 16px !important; border-radius: 16px !important; font-size: 1.15rem; }
+.full-save-btn { width: 100%; margin-top: 18px; }
+
+.dual-btn-row { display: flex; gap: 15px; justify-content: center; width: 100%; }
+.footer-btn-row { display: flex; gap: 15px; margin-top: 20px; }
+.top-space-btn { margin-top: 15px; }
+
+/* ===================== FORM ===================== */
+/* ===================== FORM ===================== */
+.form-group { margin-bottom: 20px; position: relative; }
+.form-group input { width: 100%; background-color: #555770; border: none; border-radius: 14px; padding: 18px 20px; color: #FFFFFF; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.05rem; transition: background-color 0.2s ease; }
+.form-group input::placeholder { color: #A5A6B9; opacity: 1; text-transform: uppercase; font-size: 0.95rem; }
+.form-group input:focus { background-color: #636582; }
+.eye-toggle-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; padding: 5px; border-radius: 50%; transition: background 0.2s; }
+.eye-toggle-btn:hover { background: rgba(255,255,255,0.1); }
+.input-tag-label { display: block; font-size: 0.85rem; color: #A5A6B9; margin-bottom: 8px; padding-left: 2px; text-align: left; }
+
+/* ===================== MAIN LAYOUT ===================== */
+/* ===================== MAIN LAYOUT ===================== */
+.admin-layout { width: 100%; max-width: 520px; padding: 25px 18px 100px 18px; min-height: 100vh; min-height: 100dvh; margin: 0 auto; position: relative; }
+.admin-header-bar { padding-bottom: 15px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.admin-title-panel { font-weight: 800; font-size: 1.7rem; letter-spacing: 0.5px; }
+
+.bottom-tab-content { display: none; }
+.bottom-tab-content.active { display: block; animation: fadeInAnimation 0.12s ease-out forwards; will-change: opacity, transform; }
+@keyframes fadeInAnimation { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===================== SECTION CARD ===================== */
+/* ===================== SECTION CARD ===================== */
+.home-section-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 22px; padding: 22px; }
+.home-section { display: none; }
+.home-section.active { display: block; animation: fadeInAnimation 0.12s ease-out forwards; will-change: opacity, transform; }
+
+.section-title-bar { background: rgba(255,255,255,0.08); border-radius: 16px; padding: 22px 10px; text-align: center; font-size: 1.5rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 18px; transition: all 0.3s ease; }
+
+/* ===================== SEGMENTED TABS ===================== */
+.segmented-tabs { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+/* Button-pair cards (PRIZE GALLERY / PRIZE POOL, PRIZE RATE / PRIZE ARCHIVE):
+   when a .segmented-tabs nav is the card's only child, drop the trailing
+   margin that was left over from list-context usage and let the card center
+   the pair perfectly instead of leaving dead space beneath it. */
+.home-section-card:has(> .segmented-tabs:only-child) { display: flex; flex-direction: column; justify-content: center; align-items: stretch; }
+.home-section-card > .segmented-tabs:only-child { margin-bottom: 0; }
+.segment-btn { flex: 1; min-width: 100px; background: rgba(255,255,255,0.06); border: none; color: #E2E2EC; padding: 14px 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; border-radius: 14px; transition: background-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease; letter-spacing: 0.3px; }
+.segment-btn.active { background: rgba(255,255,255,0.22); color: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2); }
+
+/* ===================== EMPTY STATE ===================== */
+.empty-state-text { text-align: center; color: #A5A6B9; padding: 60px 20px; font-weight: 600; }
+
+/* ===================== MEDIA SHADOW-BOX PLACEHOLDER ===================== */
+/* ===================== PRIZE / IMAGE EDIT ===================== */
+.prize-preview-card { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 15px; display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+
+/* ===================== MEDIA SHADOW-BOX PLACEHOLDER ===================== */
+/* Nested, perfectly-squared 1:1 inner box used across Latest Prize, Past Prize, and
+   Grand Prizes upload zones. Carries a premium layered drop-shadow for depth, and
+   centers a fallback gallery/image SVG glyph until a real image is loaded -- at
+   which point the icon clears and the uploaded media fills the box natively. */
+.media-shadow-box { position: relative; width: 76px; height: 76px; aspect-ratio: 1 / 1; border-radius: 12px; flex-shrink: 0; overflow: hidden; background: rgba(0,0,0,0.35); box-shadow: 0 10px 24px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.07); }
+.media-shadow-box img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 12px; transition: opacity 0.15s ease; }
+.media-placeholder-icon { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: none; color: rgba(255,255,255,0.32); }
+.media-shadow-box.is-empty img { opacity: 0; }
+
+/* Placeholder box now matches the Upload button's theme tokens (background + border)
+   instead of the previous near-black fill, so it no longer blends into the dark page
+   background. Icon color/opacity is untouched. */
+.media-shadow-box.is-empty {
+    background: rgba(255,255,255,0.06);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.media-shadow-box.is-empty .media-placeholder-icon {
+    display: flex;
+    opacity: 0.5;
+}
+
+/* Default placeholder icon scales relative to its own box instead of a fixed 28px,
+   so it stays proportioned and centered in both compact and larger boxes without
+   touching the SVG's internal vector code. */
+.media-placeholder-icon svg { width: 40%; height: 40%; max-width: 32px; max-height: 32px; }
+.past-prize-thumb-col .media-shadow-box .media-placeholder-icon svg,
+.grand-prize-row .media-shadow-box .media-placeholder-icon svg {
+    width: 42%;
+    height: 42%;
+    max-width: 46px;
+    max-height: 46px;
+}
+
+
+
+/* Past Prize / Grand Prizes thumbnails render larger, in their own thumb column */
+.past-prize-thumb-col .media-shadow-box, .grand-prize-row .media-shadow-box { width: 128px; height: 128px; border-radius: 12px; }
+
+
+/* ===================== LIVE PREVIEW TAGS ===================== */
+.prize-preview-info { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.prize-preview-info p { font-size: 0.92rem; font-weight: 600; color: #E2E2EC; overflow-wrap: anywhere; }
+.live-preview-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(52,199,89,0.15); color: #39FF14; font-size: 0.7rem; font-weight: 800; padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; width: fit-content; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: #39FF14; box-shadow: 0 0 8px #39FF14; animation: dotPulse 1.4s infinite; }
+.live-tag-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+/* Structurally identical to .live-preview-tag (same display/padding/radius/letter-spacing)
+   but recolored to a semi-transparent dark/amber container with glowing light-yellow text,
+   so USED and LIVE read as one consistent badge language. */
+.used-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,210,0,0.14); color: #FFE97A; font-size: 0.7rem; font-weight: 800; padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; width: fit-content; text-shadow: 0 0 8px rgba(255,210,0,0.6); box-shadow: inset 0 0 0 1px rgba(255,210,0,0.3); }
+@keyframes dotPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* ===================== LIVE STATUS WORKFLOW INDICATOR ===================== */
+/* ===================== LIVE STATUS WORKFLOW INDICATOR ===================== */
+/* Sits beside the LIVE PREVIEW badge in LATEST PRIZE, PAST PRIZE, EDIT ELEMENTS,
+   and GRAND PRIZES to reflect E_EDITED_STAGE / UNSAVED_CHANGES_STAGE / CANCEL_STAGE. */
+.state-indicator { display: inline-flex; align-items: center; gap: 5px; font-size: 0.62rem; font-weight: 800; padding: 5px 11px; border-radius: 20px; letter-spacing: 0.4px; white-space: nowrap; animation: fadeInAnimation 0.15s ease-out forwards; opacity: 1; transition: opacity 0.3s ease; will-change: opacity, transform; transform: translateZ(0); }
+.state-indicator.state-unsaved { background: rgba(255,210,0,0.15); color: #FFD200; box-shadow: inset 0 0 0 1px rgba(255,210,0,0.35); }
+.state-indicator.state-cancel { background: rgba(255,59,48,0.15); color: #FF3B30; box-shadow: inset 0 0 0 1px rgba(255,59,48,0.35); }
+/* Transitional "SAVED" success state: vibrant green pill that flashes for 0.7s after
+   an individual Save icon is clicked (Latest Prize / Past Prize / Grand Prizes / Edit
+   Elements), then smoothly fades out via the .state-fade-out opacity transition below. */
+.state-indicator.state-saved { background: rgba(52,199,89,0.18); color: #39FF14; box-shadow: inset 0 0 0 1px rgba(52,199,89,0.5), 0 0 10px rgba(52,199,89,0.35); }
+.state-indicator.state-fade-out { opacity: 0; }
+
+/* Past Prize: status pill now sits inline, directly beside the per-item LIVE
+   PREVIEW tag, matching its pill dimensions exactly (font-size/padding/radius).
+   Row now lives in the fields column (right side of the thumbnail) instead of
+   underneath the Live Preview thumbnail, matching the Grand Prizes layout. */
+.mini-live-tag-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-start; min-height: 22px; }
+.mini-live-tag-row .state-indicator { font-size: 0.55rem; padding: 3px 8px; border-radius: 10px; gap: 4px; }
+
+/* Grand Prizes / Custom Prizes cards: the LIVE PREVIEW badge now sits pinned to
+   the top edge of the thumbnail image itself, and the SAVED/UNSAVED status pill
+   sits directly underneath the thumbnail -- both fully out of the fields column,
+   which now starts straight at its first control (rate buttons / QTY / toggles). */
+/* The badge markup is written BEFORE the image in the DOM (so it still reads
+   first for accessibility/order), but column-reverse flips the visual stacking
+   so the image renders on top and the LIVE PREVIEW badge renders directly
+   underneath it -- universally, across Prize Gallery, Prize Rate > Grand
+   Prizes, and Custom Prizes, since they all share this exact wrapper markup. */
+.media-thumb-wrap { position: relative; width: 100%; display: flex; flex-direction: column-reverse; align-items: center; gap: 6px; }
+.thumb-live-badge { position: static; transform: none; z-index: 3; pointer-events: none; margin: 0; }
+.thumb-status-badge { margin-top: 6px; }
+
+/* Prize Rate panel only (Grand Prizes / Custom Prizes slot grids): nudge the
+   thumbnail-pinned LIVE PREVIEW badge down a touch so its baseline lines up
+   with the input boxes/asset slots beside it. Scoped away from
+   .gallery-thumb-wrap so the Prize Gallery (Current/End Prize) badge --
+   which now lives inline in the fields column -- is completely unaffected. */
+.media-thumb-wrap:not(.gallery-thumb-wrap) .thumb-live-badge { margin-top: 4px; }
+
+/* Prize Gallery only (buildGrandPrizesListUI): the LIVE PREVIEW tag is extracted out
+   of the thumbnail wrap and rendered in the fields column, directly above the
+   Upload/Link/Delete/Save utility row, instead of pinned to the image itself. The
+   Prize Rate > Grand Prizes tab keeps its original thumbnail-pinned badge untouched. */
+.gallery-thumb-wrap { flex-direction: column; align-items: flex-start; }
+.gallery-live-tag-inline { align-self: flex-start; margin-bottom: 8px; }
+
+/* ===================== PRIZE GALLERY: FLUSH-LEFT THUMBNAIL + LARGER, TIGHTER ACTION BUTTONS ===================== */
+/* The Current Prize / End Prize thumb column was centering its (smaller,
+   88px) image inside the shared 128px-wide thumb column, which visibly
+   shifted the image inward and broke alignment with the tab row above.
+   Shrinking the column to match the thumbnail and left-aligning it fixes
+   this without touching Prize Rate > Grand Prizes / No Prize, which keep
+   their original 128px column untouched. */
+.past-prize-thumb-col:has(.gallery-thumb-wrap) { width: 88px; align-items: flex-start; }
+@media (max-width: 400px) {
+    .past-prize-thumb-col:has(.gallery-thumb-wrap) { width: 80px; }
+}
+/* Cloud Upload / Link / Trash / Save buttons for Current Prize + End Prize
+   rows only (identified by the absence of .three-col, which is reserved for
+   the Prize Rate cards' 3-icon row): sized up for easier tapping and packed
+   tightly left, right against the image thumbnail, instead of stretching
+   across the full remaining row width. */
+.grand-prize-icon-row:not(.three-col) { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px; }
+.grand-prize-icon-row:not(.three-col) .icon-mini-btn { width: 50px; height: 50px; min-width: 50px; min-height: 50px; flex: 0 0 auto; }
+.grand-prize-icon-row:not(.three-col) .icon-mini-btn svg { width: 23px; height: 23px; }
+
+/* ===================== ICON MINI BUTTON ===================== */
+.icon-mini-btn { width: 40px; height: 40px; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; color: #FFFFFF; cursor: pointer; flex-shrink: 0; transition: transform 0.12s ease; }
+.icon-mini-btn:active { transform: scale(0.9); }
+.icon-mini-btn.save-mini { background: #34C759; }
+.icon-mini-btn.del-mini { background: #FF3B30; }
+.icon-mini-btn.retake-mini { background: #00A8FF; }
+
+/* ===================== IMAGE UPLOAD ACTIONS ===================== */
+.image-action-row { display: flex; gap: 10px; justify-content: center; }
+.image-action-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px 6px; min-height: 84px; color: #E2E2EC; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.5px; cursor: pointer; transition: background 0.2s ease, transform 0.12s ease; position: relative; }
+.image-action-btn svg { flex-shrink: 0; }
+.image-action-btn:hover { background: rgba(255,255,255,0.1); }
+.image-action-btn:active { transform: scale(0.94); }
+.hidden-file-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+/* Used for file inputs that are triggered only programmatically (via .click() in JS).
+   Fully removed from layout/paint so it can never sit on top of unrelated page content
+   and swallow clicks (this was the cause of the "clicking anywhere opens upload" bug). */
+.hidden-file-input-offscreen { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; opacity: 0; }
+
+.upload-progress-container { margin-top: 12px; }
+.progress-bar-track { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+.progress-bar-fill { height: 100%; background: #39FF14; width: 0%; transition: width 0.1s linear; will-change: width; transform: translateZ(0); }
+.progress-stats { display: flex; justify-content: space-between; font-size: 0.85rem; color: #A5A6B9; }
+
+/* ===================== BOTTOM NAV BAR ===================== */
+.bottom-nav-bar { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); width: calc(100% - 36px); max-width: 484px; background: rgba(30, 30, 48, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); border-radius: 26px; display: flex; justify-content: space-around; align-items: stretch; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); z-index: 500; }
+/* Each button fills its own conceptual 1/3 slot of the bar — invisible, borderless, but tap-anywhere-safe */
+.bottom-nav-btn { background: transparent; border: none; outline: none; color: #A5A6B9; flex: 1 1 0; width: 100%; height: auto; min-height: 52px; padding: 10px 4px; margin: 0; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s ease, color 0.2s ease; touch-action: manipulation; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+.bottom-nav-btn.active { background: rgba(255,255,255,0.14); color: #FFFFFF; }
+.bottom-nav-btn:hover { color: #FFFFFF; }
+.bottom-nav-btn:active { background: rgba(255,255,255,0.1); }
+
+/* ===================== MODALS / POPUPS ===================== */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(10, 10, 18, 0.85); backdrop-filter: blur(8px); z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px; }
+.modal-overlay.hidden { display: none !important; }
+#custom-alert-overlay { z-index: 9999; }
+.modal-box-card { background: #20202F; border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; width: 100%; max-width: 360px; padding: 25px; box-shadow: 0 20px 45px rgba(0,0,0,0.55); will-change: transform, opacity; animation: modalPopIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; position: relative; text-align: center; transform: translateZ(0); }
+.close-modal-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #A5A6B9; font-size: 1.2rem; cursor: pointer; transition: color 0.2s ease; }
+.close-modal-btn:hover { color: #FFF; }
+.modal-body-text { font-size: 0.95rem; color: #E9E9F4; margin-top: 10px; line-height: 1.5; }
+
+.custom-popup-card { border: 1px solid rgba(255,255,255,0.15); }
+.popup-icon { margin-bottom: 15px; animation: bounceIn 0.5s; }
+/* Contextual glow system: each popup type carries a deep, saturated outer glow that
+   maps to its action's meaning, so destructive/success/informational states read
+   instantly at a glance against the dark theme.
+   Destructive (Remove All / delete confirmations): energetic red glow. */
+.popup-error { border-color: #FF3B30; box-shadow: 0 10px 45px rgba(255,59,48,0.4), 0 0 0 1px rgba(255,59,48,0.2), inset 0 0 0 1px rgba(255,59,48,0.15); }
+/* Success / validation (Approve All, saved confirmations): bright professional green glow. */
+.popup-success { border-color: #34C759; box-shadow: 0 10px 45px rgba(52,199,89,0.4), 0 0 0 1px rgba(52,199,89,0.2), inset 0 0 0 1px rgba(52,199,89,0.15); }
+/* Caution (disqualify / warn-only actions): amber glow. */
+.popup-warning { border-color: #FFD200; box-shadow: 0 10px 45px rgba(255,210,0,0.35), 0 0 0 1px rgba(255,210,0,0.18), inset 0 0 0 1px rgba(255,210,0,0.12); }
+/* Informational / Empty-state notices: high-fidelity blue glow encompassing the perimeter. */
+.popup-info { border-color: #00A8FF; box-shadow: 0 10px 45px rgba(0,168,255,0.4), 0 0 0 1px rgba(0,168,255,0.2), inset 0 0 0 1px rgba(0,168,255,0.15); }
+/* Striking, highly-visible Red Border + Red Box-Shadow theme reserved for destructive
+   removal confirmations (e.g. Grand Prize "Remove"), replacing the default yellow tone. */
+.popup-danger { border-color: #FF3B30; box-shadow: 0 10px 45px rgba(255,59,48,0.35), inset 0 0 0 1px rgba(255,59,48,0.25); }
+
+@keyframes modalPopIn { from { transform: scale(0.95) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+@keyframes bounceIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+/* ===================== NAV SWITCHER BUTTON ===================== */
+/* Navigation Router Button Styling */
+.nav-switcher-btn { 
+    position: fixed; 
+    top: 15px; 
+    right: 15px; 
+    z-index: 99999; 
+    background: rgba(30, 30, 45, 0.9); 
+    backdrop-filter: blur(8px); 
+    border: 1px solid rgba(255, 210, 0, 0.3); 
+    color: #FFD200; 
+    padding: 8px 16px; 
+    border-radius: 20px; 
+    font-family: 'Poppins', sans-serif; 
+    font-size: 0.8rem; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    text-decoration: none; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); 
+    transition: all 0.2s ease; 
+}
+
+/* Hover Effect */
+.nav-switcher-btn:hover { 
+    background: rgba(255, 210, 0, 0.2); 
+    border-color: #FFD200; 
+    color: #FFFFFF; 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); 
+}
+
+/* SVG Icon Styling */
+.nav-switcher-btn svg { 
+    fill: currentColor; 
+    width: 16px; 
+    height: 16px; 
+}/* ===================== GRAND PRIZES / PRIZE GALLERY VIEWS ===================== */
+/* ===================== GRAND PRIZES / PRIZE GALLERY VIEWS ===================== */
+.grandprizes-primary-view { display: none; transition: all 0.3s ease; }
+.grandprizes-primary-view.active { display: block; animation: fadeInAnimation 0.12s ease-out forwards; will-change: opacity, transform; }
+
+/* ===================== PRIZE POOL: RATE / ARCHIVE SUB-PANELS ===================== */
+.prizerate-sub-panel { display: block; }
+.prizerate-sub-panel.hidden { display: none !important; }
+.prizerate-inner-view { display: none; }
+.prizerate-inner-view.active { display: block; animation: fadeInAnimation 0.12s ease-out forwards; will-change: opacity, transform; }
+
+/* ===================== PRIZE GALLERY: CURRENT PRIZE / END PRIZE SUB-TABS ===================== */
+/* Same tab-panel behavior as .prizerate-inner-view above, scoped to the Prize
+   Gallery's CURRENT PRIZE (archivable, live-broadcast) / END PRIZE (permanent,
+   non-archivable fallback) split. */
+.gallery-sub-view { display: none; }
+.gallery-sub-view.active { display: block; animation: fadeInAnimation 0.12s ease-out forwards; will-change: opacity, transform; }
+/* END PRIZE cards reuse the exact same PERMANENT badge shape/position as the
+   LIVE PREVIEW tag (.thumb-live-badge / .mini-live-tag), recolored to a calm
+   blue so it never reads as "currently live" -- this section is a static,
+   always-available fallback rather than an active broadcast slot. */
+.permanent-badge { background: rgba(0,168,255,0.15); color: #00A8FF; }
+
+/* ===================== DISCRETE DROP-RATE PRESET BUTTONS (Grand Prizes) ===================== */
+.rate-btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.rate-btn { background: rgba(255,255,255,0.08); border: none; color: #E2E2EC; font-weight: 800; font-size: 0.85rem; padding: 11px 4px; min-height: 46px; box-sizing: border-box; border-radius: 12px; cursor: pointer; letter-spacing: 0.2px; transition: background-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, transform 0.12s ease; }
+.rate-btn:active { transform: scale(0.94); }
+.rate-btn.active { background: #34C759; color: #FFFFFF; box-shadow: 0 4px 16px rgba(52,199,89,0.4), inset 0 0 0 1px rgba(255,255,255,0.15); }
+
+/* ===================== MANUAL RATE INPUT ===================== */
+.manual-rate-input-wrap { position: relative; margin-bottom: 10px; }
+.manual-rate-input-wrap input[type="number"] { width: 100%; min-height: 50px; box-sizing: border-box; background: rgba(0,0,0,0.3); border: none; border-radius: 12px; padding: 12px 42px 12px 14px; color: #FFFFFF; font-weight: 700; font-size: 0.95rem; font-family: 'Poppins', sans-serif; -moz-appearance: textfield; }
+.manual-rate-input-wrap input[type="number"]::-webkit-outer-spin-button,
+.manual-rate-input-wrap input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.manual-rate-input-wrap .pct-suffix { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #A5A6B9; font-weight: 800; font-size: 0.85rem; pointer-events: none; }
+/* Manual 0-100% entry field: instead of a solid fill (reserved for the preset
+   pill buttons), the active/selected state draws a clear green border around
+   the input so it reads as "selected" without visually competing with the
+   preset buttons' full-background highlight. Applies uniformly to Grand
+   Prizes and No Prize, across every rate-btn-grid variant. */
+.manual-rate-input-wrap.active-custom input[type="number"] { box-shadow: inset 0 0 0 2px #34C759; background: rgba(52,199,89,0.08); }
+
+/* Disabled/last-remaining-slot Delete icon: visually inert instead of removed, so the
+   4-icon grid never reflows or shifts when the floor guardrail kicks in. */
+.icon-mini-btn.remove-mini.is-disabled,
+.icon-mini-btn.remove-mini:disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+
+/* ===================== PRIZE ARCHIVE (read-only realtime log) ===================== */
+.prize-archive-list { display: flex; flex-direction: column; gap: 14px; }
+.prize-archive-empty-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 18px; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 40px 20px; text-align: center; }
+.prize-archive-empty-icon { opacity: 0.5; display: flex; }
+.prize-archive-empty-text { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.3px; color: #E2E2EC; margin: 0; }
+.prize-archive-row { display: flex; gap: 14px; background: rgba(0,0,0,0.2); border-radius: 16px; padding: 14px; align-items: center; contain: content; }
+.prize-archive-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+/* Prize Archive: the Prize/No Prize outcome tag now sits directly beside the
+   "Archived Prize" title instead of underneath it. */
+.prize-archive-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.prize-archive-name { font-size: 0.92rem; font-weight: 700; color: #E2E2EC; overflow-wrap: anywhere; }
+.prize-archive-meta { font-size: 0.78rem; color: #A5A6B9; font-weight: 600; }
+
+/* ===================== PAST-PRIZE-STYLE ROW (reused for Grand Prizes) ===================== */
+.add-past-btn { text-align: left; }
+.past-prize-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.past-prize-row { display: flex; gap: 14px; background: rgba(0,0,0,0.2); border-radius: 16px; padding: 14px; align-items: flex-start; contain: content; }
+.past-prize-thumb-col { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; width: 128px; }
+/* Past Prize only: the live-preview/status badge row sits directly under the
+   thumbnail image (not beside the caption field). Scoped to a direct child so
+   Grand Prizes -- which keeps its status row inside .past-prize-fields-col -- is
+   completely unaffected. */
+.past-prize-thumb-col > .mini-live-tag-row { justify-content: center; text-align: center; }
+.mini-live-tag { display: inline-flex; align-items: center; gap: 4px; background: rgba(52,199,89,0.15); color: #39FF14; font-size: 0.55rem; font-weight: 800; padding: 3px 8px; border-radius: 10px; letter-spacing: 0.3px; white-space: nowrap; }
+.past-prize-fields-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.past-prize-fields-col input { width: 100%; min-width: 0; background: rgba(0,0,0,0.3); border: none; border-radius: 12px; padding: 12px 14px; color: #FFFFFF; font-weight: 700; font-size: 0.9rem; }
+.past-prize-fields-col input::placeholder { color: #A5A6B9; text-transform: uppercase; font-size: 0.8rem; }
+.past-prize-icon-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; align-items: center; justify-items: center; }
+.past-prize-icon-row .icon-mini-btn { width: 100%; aspect-ratio: 1 / 1; height: auto; min-width: 42px; min-height: 42px; border-radius: 12px; }
+.past-prize-icon-row .icon-mini-btn svg { width: 20px; height: 20px; }
+.past-prize-icon-row .icon-mini-btn.upload-mini { background: rgba(255,255,255,0.12); }
+.past-prize-icon-row .icon-mini-btn.link-mini { background: rgba(255,255,255,0.12); }
+.past-prize-icon-row .icon-mini-btn.remove-mini { background: #FF3B30; }
+.past-prize-icon-row .icon-mini-btn.save-mini { background: #34C759; }
+.see-more-btn { margin-top: 16px; }
+
+/* ===================== GRAND PRIZES DASHBOARD ===================== */
+/* ===================== GRAND PRIZES DASHBOARD ===================== */
+.add-grandprize-btn { text-align: center; font-size: 1.15rem; padding: 22px 20px; border-radius: 18px; letter-spacing: 0.5px; }
+.grand-prize-fields-col { justify-content: center; }
+.grand-prize-icon-row { grid-template-columns: repeat(4, 1fr); }
+/* Volume Control ("Set Number") field for Grand Prizes -- reuses the same
+   pill-style number input as the Custom Prize % field, with a QTY suffix
+   instead of %. */
+.quantity-input-wrap .pct-suffix { letter-spacing: 0.6px; }
+/* Row Tool Centering: the Upload / Link / Delete / Save row now sits perfectly
+   balanced in the vertical middle of its parent row block instead of top-aligned. */
+.grand-prize-row.past-prize-row { align-items: center; }
+
+@media (max-width: 400px) {
+    .grand-prize-row .media-shadow-box { width: 96px; height: 96px; }
+}
+
+/* ===================== GRAND PRIZES: ISOLATED ICON-ROW ALIGNMENT HOOK ===================== */
+/* Dedicated, isolated container for the Upload / Link / Reset trio in
+   Prize Rate > Grand Prizes (and No Prize) so its vertical position can be
+   fine-tuned independently of the image column, without touching the
+   flex/grid layout of the parent card. No visual lines are added — this is
+   positioning only. */
+.grand-prize-fields-col .past-prize-icon-row.three-col {
+    position: relative;   /* enables manual top/bottom/transform tweaks below */
+    top: -4px;             /* nudged up so the row's bottom baseline matches the image's bottom edge */
+}
+
+/* Per-button positioning hooks: adjust each button's own offset/size here
+   later without affecting the row container or its siblings. */
+.grand-prize-fields-col .past-prize-icon-row.three-col .icon-mini-btn {
+    position: relative;   /* individual manual-override hook */
+}
+.grand-prize-fields-col .past-prize-icon-row.three-col .icon-mini-btn.upload-mini { /* custom adjustments here */ }
+.grand-prize-fields-col .past-prize-icon-row.three-col .icon-mini-btn.link-mini   { /* custom adjustments here */ }
+.grand-prize-fields-col .past-prize-icon-row.three-col .icon-mini-btn.remove-mini { /* custom adjustments here */ }
+
+/* ===================== IMAGE-SLOT STATUS/TYPE OVERLAY TAGS ===================== */
+/* The UNSAVED/SAVED workflow pill and the computed prize-type tag ("Price",
+   "Grand Prizes", "Super Grand Price") are rendered as absolute-positioned
+   overlays sitting directly on top of the image thumbnail itself, instead of
+   as separate rows above/below it. */
+.media-thumb-wrap { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; }
+.thumb-status-badge-overlay { position: absolute; left: 6px; bottom: 6px; z-index: 4; }
+.thumb-type-badge-overlay { position: absolute; top: 6px; left: 6px; right: 6px; z-index: 3; background: rgba(0,0,0,0.55); color: #FFD200; font-size: 0.58rem; font-weight: 800; padding: 4px 8px; border-radius: 8px; letter-spacing: 0.3px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; box-shadow: inset 0 0 0 1px rgba(255,210,0,0.3); }
+
+/* ===================== PRIZE SLOT CARD (Grand Prizes / No Prize) ===================== */
+/* Card wrapper now stacks vertically: top row = thumbnail + fields (QTY/toggle +
+   icon row), followed by a full-width percentage-selector row, followed by a
+   full-width REMOVE / SAVE action row -- matching the reference layout exactly. */
+.prize-slot-card { flex-direction: column; align-items: stretch; }
+.prize-slot-top-row { display: flex; gap: 14px; align-items: stretch; }
+.prize-slot-top-row .past-prize-fields-col { justify-content: flex-start; }
+
+/* Grand Prizes only: bottom-anchor the Upload/Link/Delete icon trio so it
+   lines up flush with the bottom edge of the image slot beside it, instead
+   of floating in the vertical center of the row. */
+.grand-prize-row.prize-slot-card:not(.custom-prize-row) .grand-prize-fields-col { justify-content: space-between; }
+
+/* Icon row variant with only 3 controls (Upload / Link / Reset-Image) instead
+   of the original 4 (the Save action moved to the full-width SAVE button). */
+.past-prize-icon-row.three-col { grid-template-columns: repeat(3, 1fr); }
+
+/* 10% / 90% preset buttons plus a trailing custom 0-100% manual entry slot,
+   all sharing one even row. */
+.rate-btn-grid.two-plus-custom { grid-template-columns: repeat(3, 1fr); align-items: stretch; margin-top: 14px; }
+.rate-btn-grid.two-plus-custom .manual-rate-input-wrap { margin-bottom: 0; }
+.rate-btn-grid.two-plus-custom .manual-rate-input-wrap input { height: 100%; padding: 11px 30px 11px 10px; font-size: 0.85rem; text-align: center; }
+.rate-btn-grid.two-plus-custom .manual-rate-input-wrap .pct-suffix { right: 8px; font-size: 0.75rem; }
+.rate-btn-grid.two-plus-custom .manual-rate-input-wrap.active-custom input { box-shadow: inset 0 0 0 2px #34C759; }
+
+/* Full-width REMOVE (clears the entire slot/config) / SAVE (commits to
+   Firestore) action row pinned to the bottom of every prize slot card. */
+.card-action-row { margin-top: 14px; }
+.card-action-row .btn { flex: 1; }
+
+/* ===================== PRIZE GALLERY: COMPACT THUMBNAILS ===================== */
+/* Current Prize / End Prize tabs only. Scoped strictly to .gallery-thumb-wrap
+   so Prize Rate > Grand Prizes and Prize Rate > No Prize thumbnails (which
+   must stay exactly as-is) are completely unaffected. */
+.gallery-thumb-wrap .media-shadow-box { width: 88px; height: 88px; }
+@media (max-width: 400px) {
+    .gallery-thumb-wrap .media-shadow-box { width: 80px; height: 80px; }
+}
+
+/* ===================== PRIZE RATE: RATE-BUTTON GRID VARIANTS ===================== */
+/* Grand Prizes: three preset buttons (10% / 50% / 80%) followed by one wider
+   custom "1-100%" field, all sharing a single row -- matching the reference
+   layout instead of the old 2x2 stacked grid. Pulled up slightly closer to
+   the image/QTY row above via a reduced top margin. */
+.rate-btn-grid.four-plus-custom { grid-template-columns: repeat(3, 1fr) 1.7fr; gap: 8px; margin-top: 8px; align-items: stretch; }
+.rate-btn-grid.four-plus-custom .rate-btn { width: 100%; }
+.rate-btn-grid.four-plus-custom .manual-rate-input-wrap { margin-bottom: 0; }
+.rate-btn-grid.four-plus-custom .manual-rate-input-wrap input { height: 100%; padding: 12px 30px 12px 10px; text-align: center; }
+.rate-btn-grid.four-plus-custom .manual-rate-input-wrap .pct-suffix { right: 10px; }
+
+/* No Prize: a compact 90% preset sits beside a distinctly wider custom
+   0-100% field, also nudged upward. */
+.rate-btn-grid.one-plus-custom { grid-template-columns: 1fr 1.8fr; gap: 8px; margin-top: 8px; align-items: stretch; }
+.rate-btn-grid.one-plus-custom .manual-rate-input-wrap { margin-bottom: 0; }
+.rate-btn-grid.one-plus-custom .manual-rate-input-wrap input { height: 100%; }
+
+/* Larger, tighter-grouped REMOVE / SAVE action row shared by Grand Prizes and
+   No Prize prize-slot cards -- bigger touch targets, less dead space above. */
+.card-action-row.card-action-row-lg { margin-top: 8px; }
+.card-action-row.card-action-row-lg .btn { padding: 17px 10px; font-size: 1rem; border-radius: 16px; }
+
+/* QTY field (Grand Prizes only): slightly taller, extra room added from the
+   bottom of the box. */
+.quantity-input-wrap input[type="number"] { min-height: 58px; padding-bottom: 16px; }
+
+/* ===================== NO PRIZE: IMAGE SYMMETRY WITH GRAND PRIZES + LARGER TOP ICONS ===================== */
+/* Distinguishing class added only to the No Prize (Custom Prizes) card so
+   Grand Prizes is completely unaffected. The thumbnail column now inherits
+   the default centered alignment (same as Grand Prizes) instead of being
+   left-aligned, so image position/symmetry matches exactly between the two
+   tabs. */
+.custom-prize-row .past-prize-icon-row.three-col .icon-mini-btn { min-width: 52px; min-height: 52px; border-radius: 14px; }
+.custom-prize-row .past-prize-icon-row.three-col .icon-mini-btn svg { width: 24px; height: 24px; }
+
+/* No Prize only: the 90% preset + custom 0-100% input now live directly
+   beneath the Upload/Link/Trash icon row, inside the same right-hand fields
+   column, instead of spanning the full card width below the image. This
+   makes its footprint match the icon row above it and removes the dead
+   whitespace that used to sit between the image and the REMOVE/SAVE row. */
+.custom-prize-row .past-prize-fields-col { gap: 8px; }
+.custom-prize-row .past-prize-fields-col .rate-btn-grid.one-plus-custom { flex: 0 0 auto; margin-top: auto; margin-bottom: 0; gap: 6px; }
+.custom-prize-row .past-prize-fields-col .rate-btn-grid.one-plus-custom .rate-btn { height: 100%; min-height: 40px; padding: 8px 4px; font-size: 0.78rem; border-radius: 10px; }
+.custom-prize-row .past-prize-fields-col .rate-btn-grid.one-plus-custom .manual-rate-input-wrap { height: 100%; }
+.custom-prize-row .past-prize-fields-col .rate-btn-grid.one-plus-custom .manual-rate-input-wrap input[type="number"] { height: 100%; min-height: 60px; padding: 8px 26px 8px 10px; font-size: 0.78rem; border-radius: 10px; }
+.custom-prize-row .past-prize-fields-col .rate-btn-grid.one-plus-custom .manual-rate-input-wrap .pct-suffix { right: 9px; font-size: 0.7rem; }
+
+/* REMOVE / SAVE shift up flush beneath the now-shorter top row, closing the
+   gap that used to be left by the full-width rate row. */
+.custom-prize-row.prize-slot-card .card-action-row.card-action-row-lg { margin-top: 10px; }
+
+/* ===================== AUTH SESSION GATE ===================== */
+/* The instant a page loads, the whole document is hidden while Firebase silently
+   restores (or fails to find) the session. This guarantees the login screen only
+   ever has a chance to paint on index.html, and that swiping between the
+   authenticated pages never flashes a login prompt or bare unstyled layout. */
+html.session-checking body { visibility: hidden; }
+/* =====================================================================
+   LIVE DROP-RATE TOTAL BAR
+   Sits above the GRAND PRIZES / NO PRIZE tabs because both pools feed the
+   same shared 0-100% range that the Lucky Draw rolls against.
+
+   The bar animates width, which is a layout-triggering property — that is a
+   deliberate trade here: it is a single 6px-tall element that only changes on
+   an explicit admin edit, never in a loop, so the cost is one cheap layout on
+   an isolated node rather than anything on a hot path. `contain: layout size`
+   confines that work to the bar itself so it can never reflow the prize list
+   above or below it.
+===================================================================== */
+.drop-rate-total-box {
+    margin: 14px 0 4px;
+    padding: 13px 15px 11px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    transition: border-color 0.25s ease;
+}
+
+.drop-rate-total-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.drop-rate-total-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #A5A6B9;
+}
+
+.drop-rate-total-value {
+    font-size: 1.18rem;
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    /* Tabular figures stop the number jittering horizontally as it counts
+       0% -> 100%, since every digit then occupies the same advance width. */
+    color: #FFFFFF;
+    transition: color 0.25s ease;
+}
+
+.drop-rate-total-track {
+    position: relative;
+    height: 6px;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.34);
+    overflow: hidden;
+    contain: layout size;
+}
+
+.drop-rate-total-fill {
+    height: 100%;
+    width: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #00A8FF, #39FF14);
+    transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease;
+}
+
+.drop-rate-total-note {
+    margin-top: 9px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: #8A8CA3;
+}
+
+/* Under-allocated: valid and often intentional (a deliberately hard giveaway),
+   so this reads as neutral information rather than an error. */
+.drop-rate-total-box.rate-under { border-color: rgba(0, 168, 255, 0.30); }
+.drop-rate-total-box.rate-under .drop-rate-total-value { color: #00A8FF; }
+
+/* Exactly 100%: every spin lands on something the admin configured. */
+.drop-rate-total-box.rate-exact { border-color: rgba(57, 255, 20, 0.42); }
+.drop-rate-total-box.rate-exact .drop-rate-total-value { color: #39FF14; }
+
+/* Over 100%: the draw must scale the rates down, so the on-screen numbers are
+   no longer the true chances. Flagged in red because it silently changes the
+   meaning of every value on the page. */
+.drop-rate-total-box.rate-over { border-color: rgba(255, 59, 48, 0.50); }
+.drop-rate-total-box.rate-over .drop-rate-total-value { color: #FF3B30; }
+.drop-rate-total-box.rate-over .drop-rate-total-fill { background: linear-gradient(90deg, #FF9500, #FF3B30); }
+.drop-rate-total-box.rate-over .drop-rate-total-note { color: #FF6B61; }
+
+/* =====================================================================================
+   RENDERING PERFORMANCE LAYER
+   Appended last. Visual output is unchanged — this only reduces per-frame work.
+===================================================================================== */
+
+/* Long scrolling record lists (approval board, archive, history, prize lists) are
+   self-contained boxes: containing layout+paint means re-rendering the list can never
+   force a layout pass on the rest of the console, and a flick at the end of the list
+   doesn't chain into scrolling the page behind it. */
+.section-scroll-box,
+.data-table-wrap,
+.past-prize-list,
+.prize-archive-list {
+    contain: layout paint;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Uniform, independent rows — adding or removing one shouldn't re-lay-out its siblings. */
+.player-card,
+.past-prize-row,
+.prize-archive-row,
+.notice-slot-card {
+    contain: layout paint;
+}
+
+/* Removes the legacy ~300ms tap delay so admin controls respond immediately. */
+button, .btn, .segment-btn, .grid-nav-btn, .icon-mini-btn, .bottom-nav-btn, a {
+    touch-action: manipulation;
+}
+
+/* Honour the OS reduce-motion setting: an accessibility requirement, and it also stops
+   every infinite animation on the page at once on low-powered hardware. */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
