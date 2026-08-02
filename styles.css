@@ -1,0 +1,518 @@
+/* =====================================================================
+   RESET / GLOBAL
+===================================================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent !important; }
+*:focus { outline: none !important; box-shadow: none; }
+
+html, body { height: 100%; }
+html {
+    scroll-behavior: smooth;
+    background: linear-gradient(180deg, #2D2D48 0%, #1A1A2E 100%);
+    background-color: #1A1A2E;
+    min-height: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+}
+/* background-attachment:fixed intentionally removed: on mobile browsers it can fail to
+   extend/repaint across dynamically-growing content (lists, tables), leaving a raw white
+   gap exposed below the last painted frame once the page scrolls past that height. The
+   gradient background on both html and body now scrolls naturally with the document, and
+   the solid background-color fallback guarantees the dark theme fills every pixel of the
+   scrollable area regardless of content height, orientation, or dynamic list growth. */
+body { font-family: 'Poppins', sans-serif; font-weight: 700; background: linear-gradient(180deg, #2D2D48 0%, #1A1A2E 100%); background-color: #1A1A2E; color: #FFFFFF; min-height: 100vh; min-height: 100dvh; overflow-x: hidden; overscroll-behavior-y: none; display: flex; justify-content: center; align-items: flex-start; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+button, input, select { font-family: 'Poppins', sans-serif; }
+button { cursor: pointer; touch-action: manipulation; }
+.section-scroll-box, .past-prize-list, .home-section-card, .modal-box-card, .bottom-nav-bar { will-change: transform; transform: translateZ(0); -webkit-overflow-scrolling: touch; }
+/* Every interactive surface gets GPU-composited, high-refresh-friendly transitions
+   instead of layout-triggering ones, so taps/animations stay smooth on 90Hz/120Hz displays. */
+.btn, .grid-nav-btn, .segment-btn, .circle-action-btn, .bottom-nav-btn, .image-action-btn, .ratio-toggle-btn, .past-toolbar-btn, .icon-mini-btn { will-change: transform; transform: translateZ(0); backface-visibility: hidden; }
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}
+
+/* Lock scroll gestures to a single linear axis so cards/tables track the finger cleanly
+   instead of drifting diagonally or feeling loose/circular. */
+.section-scroll-box { touch-action: pan-y; overscroll-behavior-y: contain; }
+.data-table-wrap { touch-action: pan-x pan-y; overscroll-behavior: contain; }
+.past-prize-list { touch-action: pan-y; }
+
+img.img-loading { animation: skeletonPulse 1.5s infinite ease-in-out; background: linear-gradient(90deg, #252538 25%, #34344e 50%, #252538 75%); background-size: 200% 100%; color: transparent; min-height: 90px; background-color: #2D2D48; }
+@keyframes skeletonPulse { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+.hidden { display: none !important; }
+.text-center { text-align: center !important; }
+.deep-divider { border: none; height: 1px; background: rgba(255, 255, 255, 0.1); margin: 22px 0; }
+
+/* ===================== BUTTONS ===================== */
+/* ===================== BUTTONS ===================== */
+.btn { font-weight: 800; border: none; border-radius: 24px; padding: 15px 35px; font-size: 1.1rem; cursor: pointer; text-align: center; transition: transform 0.12s cubic-bezier(.4,0,.2,1), background 0.2s ease, box-shadow 0.2s ease; display: inline-block; letter-spacing: 0.5px; will-change: transform; }
+.btn:active { transform: scale(0.94) !important; box-shadow: none !important; }
+.btn-action-green { background-color: #34C759; color: #FFFFFF; box-shadow: 0 6px 25px rgba(52, 199, 89, 0.35); min-width: 150px; }
+.btn-action-green:hover:not(:disabled) { background-color: #30D158; box-shadow: 0 8px 30px rgba(52, 199, 89, 0.5); }
+.btn-secondary-soft { background-color: rgba(255, 255, 255, 0.1); color: #E2E2EC; border: 1px solid rgba(255, 255, 255, 0.15); width: 100%; }
+.btn-secondary-soft:hover { background-color: rgba(255, 255, 255, 0.15); color: #FFF; }
+.btn-danger-action { background-color: #FF3B30; color: #FFFFFF; box-shadow: 0 6px 22px rgba(255, 59, 48, 0.35); }
+.btn-danger-action:hover:not(:disabled) { background-color: #FF4F45; box-shadow: 0 8px 28px rgba(255,59,48,0.5); }
+.btn-success-action { background-color: #34C759; color: #FFFFFF; box-shadow: 0 6px 22px rgba(52, 199, 89, 0.35); }
+.btn-success-action:hover:not(:disabled) { background-color: #4CD964; box-shadow: 0 8px 28px rgba(52,199,89,0.5); }
+.btn-sm { padding: 10px 20px; font-size: 0.9rem; border-radius: 14px; }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.btn-footer { flex: 1; padding: 16px 10px !important; font-size: 1rem; border-radius: 16px !important; text-transform: uppercase; }
+.btn-login { width: 100%; padding: 16px !important; border-radius: 16px !important; font-size: 1.15rem; }
+.full-save-btn { width: 100%; margin-top: 18px; }
+
+.dual-btn-row { display: flex; gap: 15px; justify-content: center; width: 100%; }
+.footer-btn-row { display: flex; gap: 15px; margin-top: 20px; }
+.top-space-btn { margin-top: 15px; }
+
+/* ===================== FORM ===================== */
+/* ===================== FORM ===================== */
+.form-group { margin-bottom: 20px; position: relative; }
+.form-group input { width: 100%; background-color: #555770; border: none; border-radius: 14px; padding: 18px 20px; color: #FFFFFF; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.05rem; transition: background-color 0.2s ease; }
+.form-group input::placeholder { color: #A5A6B9; opacity: 1; text-transform: uppercase; font-size: 0.95rem; }
+.form-group input:focus { background-color: #636582; }
+.eye-toggle-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; padding: 5px; border-radius: 50%; transition: background 0.2s; }
+.eye-toggle-btn:hover { background: rgba(255,255,255,0.1); }
+.input-tag-label { display: block; font-size: 0.85rem; color: #A5A6B9; margin-bottom: 8px; padding-left: 2px; text-align: left; }
+
+/* ===================== MAIN LAYOUT ===================== */
+/* ===================== MAIN LAYOUT ===================== */
+.admin-layout { width: 100%; max-width: 520px; padding: 25px 18px 100px 18px; min-height: 100vh; min-height: 100dvh; margin: 0 auto; position: relative; }
+.admin-header-bar { padding-bottom: 15px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.admin-title-panel { font-weight: 800; font-size: 1.7rem; letter-spacing: 0.5px; }
+
+.bottom-tab-content { display: none; }
+.bottom-tab-content.active { display: block; animation: fadeInAnimation 0.12s ease-out forwards; will-change: opacity, transform; }
+@keyframes fadeInAnimation { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===================== SECTION CARD ===================== */
+/* ===================== SECTION CARD ===================== */
+.home-section-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 22px; padding: 22px; }
+.home-section { display: none; }
+.home-section.active { display: block; animation: fadeInAnimation 0.12s ease-out forwards; will-change: opacity, transform; }
+
+.section-title-bar { background: rgba(255,255,255,0.08); border-radius: 16px; padding: 22px 10px; text-align: center; font-size: 1.5rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 18px; transition: all 0.3s ease; }
+
+/* ===================== SEGMENTED TABS ===================== */
+.segmented-tabs { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+.segment-btn { flex: 1; min-width: 100px; background: rgba(255,255,255,0.06); border: none; color: #E2E2EC; padding: 14px 8px; font-weight: 800; font-size: 0.88rem; cursor: pointer; border-radius: 14px; transition: background-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease; letter-spacing: 0.3px; }
+.segment-btn.active { background: rgba(255,255,255,0.22); color: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2); }
+
+/* ===================== EMPTY STATE ===================== */
+.empty-state-text { text-align: center; color: #A5A6B9; padding: 60px 20px; font-weight: 600; }
+
+/* ===================== MEDIA SHADOW-BOX PLACEHOLDER ===================== */
+/* ===================== PRIZE / IMAGE EDIT ===================== */
+.prize-preview-card { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 15px; display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+
+/* ===================== MEDIA SHADOW-BOX PLACEHOLDER ===================== */
+/* Nested, perfectly-squared 1:1 inner box used across Latest Prize, Past Prize, and
+   Grand Prizes upload zones. Carries a premium layered drop-shadow for depth, and
+   centers a fallback gallery/image SVG glyph until a real image is loaded -- at
+   which point the icon clears and the uploaded media fills the box natively. */
+.media-shadow-box { position: relative; width: 76px; height: 76px; aspect-ratio: 1 / 1; border-radius: 12px; flex-shrink: 0; overflow: hidden; background: rgba(0,0,0,0.35); box-shadow: 0 10px 24px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.07); }
+.media-shadow-box img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 12px; transition: opacity 0.15s ease; }
+.media-placeholder-icon { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; pointer-events: none; color: rgba(255,255,255,0.32); }
+.media-shadow-box.is-empty img { opacity: 0; }
+
+/* Placeholder box now matches the Upload button's theme tokens (background + border)
+   instead of the previous near-black fill, so it no longer blends into the dark page
+   background. Icon color/opacity is untouched. */
+.media-shadow-box.is-empty {
+    background: rgba(255,255,255,0.06);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.media-shadow-box.is-empty .media-placeholder-icon {
+    display: flex;
+    opacity: 0.5;
+}
+
+/* Default placeholder icon scales relative to its own box instead of a fixed 28px,
+   so it stays proportioned and centered in both compact and larger boxes without
+   touching the SVG's internal vector code. */
+.media-placeholder-icon svg { width: 40%; height: 40%; max-width: 32px; max-height: 32px; }
+.past-prize-thumb-col .media-shadow-box .media-placeholder-icon svg,
+.grand-prize-row .media-shadow-box .media-placeholder-icon svg {
+    width: 42%;
+    height: 42%;
+    max-width: 46px;
+    max-height: 46px;
+}
+
+
+
+/* Past Prize / Grand Prizes thumbnails render larger, in their own thumb column */
+.past-prize-thumb-col .media-shadow-box, .grand-prize-row .media-shadow-box { width: 110px; height: 110px; border-radius: 12px; }
+
+
+/* ===================== LIVE PREVIEW TAGS ===================== */
+.prize-preview-info { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.prize-preview-info p { font-size: 0.92rem; font-weight: 600; color: #E2E2EC; overflow-wrap: anywhere; }
+.live-preview-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(52,199,89,0.15); color: #39FF14; font-size: 0.7rem; font-weight: 800; padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; width: fit-content; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: #39FF14; box-shadow: 0 0 8px #39FF14; animation: dotPulse 1.4s infinite; }
+.live-tag-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+/* Structurally identical to .live-preview-tag (same display/padding/radius/letter-spacing)
+   but recolored to a semi-transparent dark/amber container with glowing light-yellow text,
+   so USED and LIVE read as one consistent badge language. */
+.used-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,210,0,0.14); color: #FFE97A; font-size: 0.7rem; font-weight: 800; padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; width: fit-content; text-shadow: 0 0 8px rgba(255,210,0,0.6); box-shadow: inset 0 0 0 1px rgba(255,210,0,0.3); }
+@keyframes dotPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* ===================== LIVE STATUS WORKFLOW INDICATOR ===================== */
+/* ===================== LIVE STATUS WORKFLOW INDICATOR ===================== */
+/* Sits beside the LIVE PREVIEW badge in LATEST PRIZE, PAST PRIZE, EDIT ELEMENTS,
+   and GRAND PRIZES to reflect E_EDITED_STAGE / UNSAVED_CHANGES_STAGE / CANCEL_STAGE. */
+.state-indicator { display: inline-flex; align-items: center; gap: 5px; font-size: 0.62rem; font-weight: 800; padding: 5px 11px; border-radius: 20px; letter-spacing: 0.4px; white-space: nowrap; animation: fadeInAnimation 0.15s ease-out forwards; opacity: 1; transition: opacity 0.3s ease; will-change: opacity, transform; transform: translateZ(0); }
+.state-indicator.state-unsaved { background: rgba(255,210,0,0.15); color: #FFD200; box-shadow: inset 0 0 0 1px rgba(255,210,0,0.35); }
+.state-indicator.state-cancel { background: rgba(255,59,48,0.15); color: #FF3B30; box-shadow: inset 0 0 0 1px rgba(255,59,48,0.35); }
+/* Transitional "SAVED" success state: vibrant green pill that flashes for 0.7s after
+   an individual Save icon is clicked (Latest Prize / Past Prize / Grand Prizes / Edit
+   Elements), then smoothly fades out via the .state-fade-out opacity transition below. */
+.state-indicator.state-saved { background: rgba(52,199,89,0.18); color: #39FF14; box-shadow: inset 0 0 0 1px rgba(52,199,89,0.5), 0 0 10px rgba(52,199,89,0.35); }
+.state-indicator.state-fade-out { opacity: 0; }
+
+/* Past Prize: status pill now sits inline, directly beside the per-item LIVE
+   PREVIEW tag, matching its pill dimensions exactly (font-size/padding/radius).
+   Row now lives in the fields column (right side of the thumbnail) instead of
+   underneath the Live Preview thumbnail, matching the Grand Prizes layout. */
+.mini-live-tag-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-start; min-height: 22px; }
+.mini-live-tag-row .state-indicator { font-size: 0.55rem; padding: 3px 8px; border-radius: 10px; gap: 4px; }
+
+/* Grand Prizes: status pill relocated into the header space directly above the
+   row of four action buttons (Upload / Link / Delete / Save), slightly scaled
+   up from the base .state-indicator size to read clearly in its new spot. */
+.grandprize-status-row { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; min-height: 24px; margin-bottom: 8px; }
+.grand-prize-fields-col .state-indicator { font-size: 0.72rem; padding: 6px 14px; }
+/* LIVE PREVIEW badge now lives beside the status pill in this relocated header row
+   instead of under the thumbnail; nudged up slightly to match the pill's scale. */
+.grandprize-status-row .mini-live-tag { font-size: 0.65rem; padding: 5px 10px; }
+
+/* ===================== ICON MINI BUTTON ===================== */
+.icon-mini-btn { width: 40px; height: 40px; border-radius: 12px; border: none; display: flex; align-items: center; justify-content: center; color: #FFFFFF; cursor: pointer; flex-shrink: 0; transition: transform 0.12s ease; }
+.icon-mini-btn:active { transform: scale(0.9); }
+.icon-mini-btn.save-mini { background: #34C759; }
+.icon-mini-btn.del-mini { background: #FF3B30; }
+
+/* ===================== IMAGE UPLOAD ACTIONS ===================== */
+.image-action-row { display: flex; gap: 10px; justify-content: center; }
+.image-action-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px 6px; min-height: 84px; color: #E2E2EC; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.5px; cursor: pointer; transition: background 0.2s ease, transform 0.12s ease; position: relative; }
+.image-action-btn svg { flex-shrink: 0; }
+.image-action-btn:hover { background: rgba(255,255,255,0.1); }
+.image-action-btn:active { transform: scale(0.94); }
+.hidden-file-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+/* Used for file inputs that are triggered only programmatically (via .click() in JS).
+   Fully removed from layout/paint so it can never sit on top of unrelated page content
+   and swallow clicks (this was the cause of the "clicking anywhere opens upload" bug). */
+.hidden-file-input-offscreen { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; opacity: 0; }
+
+.upload-progress-container { margin-top: 12px; }
+.progress-bar-track { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+.progress-bar-fill { height: 100%; background: #39FF14; width: 0%; transition: width 0.1s linear; will-change: width; transform: translateZ(0); }
+.progress-stats { display: flex; justify-content: space-between; font-size: 0.85rem; color: #A5A6B9; }
+
+/* ===================== BOTTOM NAV BAR ===================== */
+.bottom-nav-bar { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); width: calc(100% - 36px); max-width: 484px; background: rgba(30, 30, 48, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); border-radius: 26px; display: flex; justify-content: space-around; align-items: stretch; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); z-index: 500; }
+/* Each button fills its own conceptual 1/3 slot of the bar — invisible, borderless, but tap-anywhere-safe */
+.bottom-nav-btn { background: transparent; border: none; outline: none; color: #A5A6B9; flex: 1 1 0; width: 100%; height: auto; min-height: 52px; padding: 10px 4px; margin: 0; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s ease, color 0.2s ease; touch-action: manipulation; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+.bottom-nav-btn.active { background: rgba(255,255,255,0.14); color: #FFFFFF; }
+.bottom-nav-btn:hover { color: #FFFFFF; }
+.bottom-nav-btn:active { background: rgba(255,255,255,0.1); }
+
+/* ===================== MODALS / POPUPS ===================== */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(10, 10, 18, 0.85); backdrop-filter: blur(8px); z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px; }
+.modal-overlay.hidden { display: none !important; }
+#custom-alert-overlay { z-index: 9999; }
+.modal-box-card { background: #20202F; border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; width: 100%; max-width: 360px; padding: 25px; box-shadow: 0 20px 45px rgba(0,0,0,0.55); will-change: transform, opacity; animation: modalPopIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; position: relative; text-align: center; transform: translateZ(0); }
+.close-modal-btn { position: absolute; top: 15px; right: 20px; background: transparent; border: none; color: #A5A6B9; font-size: 1.2rem; cursor: pointer; transition: color 0.2s ease; }
+.close-modal-btn:hover { color: #FFF; }
+.modal-body-text { font-size: 0.95rem; color: #E9E9F4; margin-top: 10px; line-height: 1.5; }
+
+.custom-popup-card { border: 1px solid rgba(255,255,255,0.15); }
+.popup-icon { margin-bottom: 15px; animation: bounceIn 0.5s; }
+/* Contextual glow system: each popup type carries a deep, saturated outer glow that
+   maps to its action's meaning, so destructive/success/informational states read
+   instantly at a glance against the dark theme.
+   Destructive (Remove All / delete confirmations): energetic red glow. */
+.popup-error { border-color: #FF3B30; box-shadow: 0 10px 45px rgba(255,59,48,0.4), 0 0 0 1px rgba(255,59,48,0.2), inset 0 0 0 1px rgba(255,59,48,0.15); }
+/* Success / validation (Approve All, saved confirmations): bright professional green glow. */
+.popup-success { border-color: #34C759; box-shadow: 0 10px 45px rgba(52,199,89,0.4), 0 0 0 1px rgba(52,199,89,0.2), inset 0 0 0 1px rgba(52,199,89,0.15); }
+/* Caution (disqualify / warn-only actions): amber glow. */
+.popup-warning { border-color: #FFD200; box-shadow: 0 10px 45px rgba(255,210,0,0.35), 0 0 0 1px rgba(255,210,0,0.18), inset 0 0 0 1px rgba(255,210,0,0.12); }
+/* Informational / Empty-state notices: high-fidelity blue glow encompassing the perimeter. */
+.popup-info { border-color: #00A8FF; box-shadow: 0 10px 45px rgba(0,168,255,0.4), 0 0 0 1px rgba(0,168,255,0.2), inset 0 0 0 1px rgba(0,168,255,0.15); }
+/* Striking, highly-visible Red Border + Red Box-Shadow theme reserved for destructive
+   removal confirmations (e.g. Grand Prize "Remove"), replacing the default yellow tone. */
+.popup-danger { border-color: #FF3B30; box-shadow: 0 10px 45px rgba(255,59,48,0.35), inset 0 0 0 1px rgba(255,59,48,0.25); }
+
+@keyframes modalPopIn { from { transform: scale(0.95) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+@keyframes bounceIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+/* ===================== NAV SWITCHER BUTTON ===================== */
+/* Navigation Router Button Styling */
+.nav-switcher-btn { 
+    position: fixed; 
+    top: 15px; 
+    right: 15px; 
+    z-index: 99999; 
+    background: rgba(30, 30, 45, 0.9); 
+    backdrop-filter: blur(8px); 
+    border: 1px solid rgba(255, 210, 0, 0.3); 
+    color: #FFD200; 
+    padding: 8px 16px; 
+    border-radius: 20px; 
+    font-family: 'Poppins', sans-serif; 
+    font-size: 0.8rem; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+    text-decoration: none; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); 
+    transition: all 0.2s ease; 
+}
+
+/* Hover Effect */
+.nav-switcher-btn:hover { 
+    background: rgba(255, 210, 0, 0.2); 
+    border-color: #FFD200; 
+    color: #FFFFFF; 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); 
+}
+
+/* SVG Icon Styling */
+.nav-switcher-btn svg { 
+    fill: currentColor; 
+    width: 16px; 
+    height: 16px; 
+}/* ===================== LOGIN GATE ===================== */
+/* ===================== LOGIN GATE ===================== */
+/* Vertically centered so the login card sits balanced on the viewport instead of
+   dropping toward the bottom edge (previously flex-end caused uneven, bottom-heavy
+   whitespace). Centered alignment reads as clean and elevated on all screen sizes. */
+#admin-auth-overlay { align-items: center; padding-top: 0; padding-bottom: 0; }
+.login-gate-wrap { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; margin: 0 auto; }
+.barbarian-character-img { width: 400px; max-width: 65vw; position: relative; z-index: 2; margin-bottom: -68px; pointer-events: none; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+.login-card { max-width: 380px; padding: 40px 28px 30px; text-align: center; position: relative; z-index: 1; width: 100%; }
+.login-title { font-size: 1.9rem; font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; color: #FFFFFF; }
+.login-security-line { font-size: 0.95rem; color: #FFFFFF; font-weight: 700; margin-bottom: 24px; letter-spacing: 0.5px; opacity: 0.92; }
+
+/* ===================== HOME GRID NAV ===================== */
+/* ===================== HOME GRID NAV ===================== */
+.home-grid-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 22px; padding: 18px; margin-bottom: 22px; }
+.grid-nav-btn { background: rgba(255,255,255,0.08); border: none; color: #E2E2EC; padding: 20px 10px; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.3px; border-radius: 16px; cursor: pointer; transition: background-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease; }
+.grid-nav-btn.active { background: rgba(255,255,255,0.18); color: #FFFFFF; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15); }
+.grid-nav-btn:hover { background: rgba(255,255,255,0.14); }
+
+/* ===================== ARCHIVE SCROLL BOX ===================== */
+.section-scroll-box { background: rgba(255,255,255,0.06); border-radius: 18px; min-height: 220px; max-height: 420px; overflow-y: auto; padding: 8px; contain: content; }
+.section-scroll-box::-webkit-scrollbar { width: 6px; }
+.section-scroll-box::-webkit-scrollbar-track { background: transparent; }
+.section-scroll-box::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
+
+/* ===================== PLAYER CARD ROWS ===================== */
+/* ===================== PLAYER CARD ROWS ===================== */
+.player-card { background: rgba(0,0,0,0.18); border-radius: 14px; padding: 14px 16px; margin: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.player-card-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.player-card-name { font-size: 1.02rem; font-weight: 700; color: #FFFFFF; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.player-card-meta { font-size: 0.82rem; color: #A5A6B9; font-weight: 600; }
+.player-card-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+.status-badge { padding: 4px 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; margin-left: 6px; }
+.status-badge.pending { background: rgba(255, 210, 0, 0.15); color: #FFD200; border: 1px solid rgba(255, 210, 0, 0.35); }
+/* Every status tag carries a crisp, solid stroke that dynamically matches its own text
+   color, so Approved/Disqualified/Removed/Winner all read as clearly bounded chips
+   instead of soft, borderless fills. */
+.status-badge.approved { background: rgba(52, 199, 89, 0.15); color: #34C759; border: 1px solid #34C759; }
+.status-badge.disqualified { background: rgba(10, 132, 255, 0.15); color: #0A84FF; border: 1px solid #0A84FF; }
+.status-badge.removed { background: rgba(255, 59, 48, 0.15); color: #FF3B30; border: 1px solid #FF3B30; }
+/* Winner gets a premium gilded treatment -- kept as an available style, but Winner
+   History now mirrors the Normal History look below by default (see .winner-normal). */
+.status-badge.winner { background: linear-gradient(135deg, #FFE16A 0%, #FFB800 55%, #FF8A00 100%); color: #3A1E00; box-shadow: 0 2px 6px rgba(255,184,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.35); font-weight: 900; }
+/* Shared WINNER badge language used by BOTH Winner History and Normal History tabs:
+   yellow/golden text on a low-opacity container with a matching crisp stroke, so the
+   two tabs read as one consistent design system. */
+.status-badge.winner-normal { background: rgba(255, 193, 7, 0.15); color: #FFC107; border: 1px solid #FFC107; }
+
+.circle-action-btn { width: 34px; height: 34px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #FFFFFF; transition: transform 0.1s ease; will-change: transform; flex-shrink: 0; }
+.circle-action-btn:hover { transform: scale(1.1); }
+.circle-action-btn:active { transform: scale(0.9); }
+.circle-action-btn.approve-check { background-color: #34C759; }
+.circle-action-btn.reject-cross { background-color: #FF3B30; }
+.circle-action-btn.disqualify-btn { background-color: #FFD200; color: #1A1A2E; }
+.circle-action-btn.history-del { background-color: #FF9500; }
+/* Winner History context: standardized red action, matching the rest of the system tables */
+.circle-action-btn.winner-action-btn { background-color: #FF3B30; color: #FFFFFF; }
+/* Normal History context: green for additive/safe, red for destructive/removal */
+.circle-action-btn.normal-action-safe { background-color: #34C759; }
+.circle-action-btn.normal-action-danger { background-color: #FF3B30; }
+/* Solid-white icon on a dark translucent disc: visible against the dark theme in any table row */
+.circle-action-btn.copy-btn { background-color: rgba(0,0,0,0.35); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.18); }
+.circle-action-btn.copy-btn:hover { background-color: rgba(0,0,0,0.55); }
+.circle-action-btn.copy-btn:active { background-color: rgba(0,0,0,0.65); }
+
+/* Highlighted copyable strings (Game ID / Phone) */
+/* Highlighted copyable strings (Game ID / Phone) — clean, theme-aware chips, no low-contrast overlays */
+.copy-highlight { background: rgba(255,255,255,0.07); color: #F2F3FA; border: 1px solid rgba(255,255,255,0.12); padding: 3px 10px; border-radius: 8px; font-weight: 700; letter-spacing: 0.2px; }
+.copy-highlight.id-highlight { background: rgba(255, 210, 0, 0.12); color: #FFD200; border-color: rgba(255, 210, 0, 0.4); }
+.copy-field-row { display: inline-flex; align-items: center; gap: 6px; margin-right: 10px; margin-top: 4px; }
+
+/* History card: corner delete button */
+/* History card: corner delete button */
+.history-card-row { position: relative; padding-right: 54px; }
+.history-card-row .corner-del-btn { position: absolute; top: 12px; right: 12px; }
+
+/* ===================== EVENT CONTROL ===================== */
+/* ===================== EVENT CONTROL ===================== */
+.event-control-box { background: rgba(255,255,255,0.05); border-radius: 18px; padding: 22px 16px; text-align: center; }
+.event-set-label { font-size: 1rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 18px; }
+.datetime-picker-row { display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.3); border-radius: 14px; padding: 8px 16px; }
+.datetime-input { flex: 1; background: transparent; border: none; color: #FFFFFF; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1rem; padding: 10px 0; color-scheme: dark; min-width: 0; }
+
+.event-manual-label { font-size: 1rem; font-weight: 800; letter-spacing: 0.5px; margin: 22px 0 12px 0; }
+
+.active-status-box { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(0,0,0,0.25); border-radius: 14px; padding: 16px; margin-top: 0px; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px; }
+.status-dot { width: 12px; height: 12px; border-radius: 50%; background: #34C759; box-shadow: 0 0 10px #34C759; flex-shrink: 0; }
+.status-dot.closed { background: #FF3B30; box-shadow: 0 0 10px #FF3B30; }
+
+.live-viewer-box { margin-top: 18px; background: rgba(0,0,0,0.25); border-radius: 14px; padding: 16px; }
+.live-viewer-label { font-size: 0.8rem; color: #A5A6B9; margin-bottom: 8px; letter-spacing: 0.5px; }
+.live-target-date-display { font-size: 0.95rem; font-weight: 700; color: #FFD200; margin-bottom: 6px; }
+.live-countdown-display { font-size: 1.6rem; font-weight: 800; letter-spacing: 1px; color: #C1E1FF; }
+
+/* ===================== DATA TABLES (Approval Board / History) ===================== */
+/* ===================== DATA TABLES (Approval Board / History) ===================== */
+.data-table-wrap { background: rgba(255,255,255,0.06); border-radius: 18px; overflow-x: auto; overflow-y: auto; max-height: 460px; -webkit-overflow-scrolling: touch; contain: content; }
+.data-table-wrap::-webkit-scrollbar { height: 6px; width: 6px; }
+.data-table-wrap::-webkit-scrollbar-track { background: transparent; }
+.data-table-wrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+.data-table { width: 100%; min-width: 640px; border-collapse: collapse; }
+.data-table thead th { position: sticky; top: 0; background: #23233a; color: #A5A6B9; text-align: left; font-size: 0.78rem; letter-spacing: 0.5px; font-weight: 800; padding: 16px 14px; white-space: nowrap; z-index: 2; }
+.data-table tbody td { padding: 14px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.92rem; font-weight: 700; color: #FFFFFF; vertical-align: middle; white-space: nowrap; }
+.data-table tbody td:first-child { white-space: normal; min-width: 150px; }
+
+/* Zebra striping: alternating row backgrounds, blended with the #2D2D48 → #1A1A2E theme */
+.data-table tbody tr:nth-child(odd) td { background: rgba(255, 255, 255, 0.035); }
+.data-table tbody tr:nth-child(even) td { background: rgba(0, 0, 0, 0.16); }
+/* Blue tap/selection highlight intentionally removed system-wide (Approval Board + History) — rows keep a clean, static background on tap/click. */
+
+.data-table.history-table { min-width: 720px; }
+.data-table td .player-card-actions { display: flex; gap: 8px; }
+
+/* Status / Date columns inside history tables */
+.data-table td .history-date-text { display: block; font-size: 0.78rem; color: #A5A6B9; font-weight: 600; margin-top: 2px; }
+
+/* ===================== EVENT CONTROL: SET REGISTRATION TIME ===================== */
+/* ===================== EVENT CONTROL: SET REGISTRATION TIME ===================== */
+.reg-time-row { display: flex; align-items: flex-end; justify-content: center; gap: 6px; }
+.reg-time-block { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; max-width: 90px; }
+.reg-time-input { width: 100%; background: rgba(0,0,0,0.3); border: none; border-radius: 12px; padding: 16px 4px; text-align: center; color: #FFFFFF; font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 1.15rem; color-scheme: dark; -moz-appearance: textfield; }
+.reg-time-input::-webkit-outer-spin-button, .reg-time-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.reg-time-input::placeholder { color: #6C6D85; }
+.reg-time-unit-label { font-size: 0.68rem; color: #A5A6B9; letter-spacing: 0.5px; font-weight: 700; }
+.reg-time-colon { font-size: 1.3rem; font-weight: 800; color: #A5A6B9; padding-bottom: 39px; }
+
+@media (max-width: 400px) {
+    .data-table { min-width: 580px; }
+    .data-table.history-table { min-width: 660px; }
+    .reg-time-input { font-size: 1rem; padding: 13px 4px; }
+    .reg-time-colon { font-size: 1.1rem; padding-bottom: 22px; }
+}
+
+/* ===================== NOTICES & BANNERS: LIVE PREVIEW ===================== */
+.notice-preview-box { position: relative; background: rgba(0,0,0,0.28); border-radius: 14px; padding: 18px 16px 46px; margin-bottom: 18px; text-align: left; }
+.notice-preview-row { display: flex; gap: 6px; font-size: 1rem; font-weight: 800; letter-spacing: 0.5px; color: #FFFFFF; margin-bottom: 10px; }
+.notice-preview-row:last-of-type { margin-bottom: 0; }
+.notice-preview-key { color: #A5A6B9; flex-shrink: 0; }
+.notice-preview-val { color: #C1E1FF; word-break: break-word; min-height: 1.2em; }
+
+.live-preview-badge { position: absolute; right: 14px; bottom: 12px; display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.08); border-radius: 20px; padding: 6px 12px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.5px; color: #E2E2EC; }
+.live-preview-badge .status-value { color: #4CAF50; }
+.live-preview-badge.status-off .status-value { color: #FF3B30; }
+.live-preview-dot { width: 9px; height: 9px; border-radius: 50%; background: #4CAF50; box-shadow: 0 0 10px #4CAF50; animation: livePreviewPulse 1.6s ease-in-out infinite; will-change: opacity; }
+.live-preview-dot.closed { background: #FF3B30; box-shadow: 0 0 10px #FF3B30; animation: livePreviewPulseOff 1.6s ease-in-out infinite; }
+
+/* Opacity-only pulse. The previous version also animated box-shadow, which forced a
+   repaint every frame of an infinite loop; the glow is now a static shadow and only the
+   compositor-friendly opacity changes. The visual difference is imperceptible. */
+@keyframes livePreviewPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
+
+@keyframes livePreviewPulseOff {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
+
+.notice-field-label { font-size: 0.85rem; font-weight: 800; letter-spacing: 0.5px; color: #A5A6B9; text-align: center; margin: 0 0 10px 0; }
+
+/* Force the Announcement (4-across) and Notice (3-across) theme buttons into a single
+   compact horizontal row, matching the reference layout on narrow screens too. */
+.notice-inline-tabs { flex-wrap: nowrap; gap: 8px; }
+.notice-inline-tabs .segment-btn { min-width: 0; padding: 12px 4px; font-size: 0.74rem; letter-spacing: 0.2px; }
+
+@media (max-width: 400px) {
+    .notice-inline-tabs .segment-btn { font-size: 0.66rem; padding: 10px 2px; }
+}
+
+/* Login credential box button wrapper */
+.credential-box .auth-btn-wrapper { display: flex; gap: 10px; width: 100%; box-sizing: border-box; justify-content: center; margin-top: 10px; }
+
+@media (max-width: 400px) {
+    .admin-title-panel { font-size: 1.4rem; }
+    .section-title-bar { font-size: 1.25rem; }
+    .barbarian-character-img { width: 160px; }
+}
+
+/* ===================== AUTH SESSION GATE ===================== */
+/* The instant a page loads, the whole document is hidden while Firebase silently
+   restores (or fails to find) the session. This guarantees the login screen only
+   ever has a chance to paint on index.html, and that swiping between the
+   authenticated pages never flashes a login prompt or bare unstyled layout. */
+html.session-checking body { visibility: hidden; }
+
+/* =====================================================================================
+   RENDERING PERFORMANCE LAYER
+   Appended last. Visual output is unchanged — this only reduces per-frame work.
+===================================================================================== */
+
+/* Long scrolling record lists (approval board, archive, history, prize lists) are
+   self-contained boxes: containing layout+paint means re-rendering the list can never
+   force a layout pass on the rest of the console, and a flick at the end of the list
+   doesn't chain into scrolling the page behind it. */
+.section-scroll-box,
+.data-table-wrap,
+.past-prize-list,
+.prize-archive-list {
+    contain: layout paint;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Uniform, independent rows — adding or removing one shouldn't re-lay-out its siblings. */
+.player-card,
+.past-prize-row,
+.prize-archive-row,
+.notice-slot-card {
+    contain: layout paint;
+}
+
+/* Removes the legacy ~300ms tap delay so admin controls respond immediately. */
+button, .btn, .segment-btn, .grid-nav-btn, .icon-mini-btn, .bottom-nav-btn, a {
+    touch-action: manipulation;
+}
+
+/* Honour the OS reduce-motion setting: an accessibility requirement, and it also stops
+   every infinite animation on the page at once on low-powered hardware. */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
