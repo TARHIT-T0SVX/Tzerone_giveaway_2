@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" class="session-checking">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Panel 1 - Edit</title>
+    <link rel="stylesheet" href="edit_styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Pre-fetch Home / Prize so the bottom-nav swipe feels instantaneous. -->
+    <link rel="prefetch" href="../index.html" as="document">
+    <link rel="prefetch" href="../styles.css" as="style">
+    <link rel="prefetch" href="../script.js" as="script">
+    <link rel="prefetch" href="../prize/prize_index.html" as="document">
+    <link rel="prefetch" href="../prize/prize_styles.css" as="style">
+    <link rel="prefetch" href="../prize/prize_script.js" as="script">
+</head>
+<body>
+
+<!-- Cross-console switcher: jumps to the Lucky Draw operator console.
+     (This previously pointed at the Admin Panel's own URL, so it was a dead self-link.) -->
+<a href="https://tzerone-giveaway-03.netlify.app/" class="nav-switcher-btn" title="Open Lucky Draw console">
+    <svg viewBox="0 0 24 24">
+        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+    </svg>
+   
+</a>
+
+    <div id="custom-alert-overlay" class="modal-overlay hidden">
+        <div id="custom-alert-box" class="modal-box-card custom-popup-card">
+            <div id="custom-alert-icon" class="popup-icon"></div>
+            <h3 id="custom-alert-title">NOTICE</h3>
+            <p id="custom-alert-message" class="modal-body-text"></p>
+            <div class="dual-btn-row top-space-btn" id="custom-alert-buttons"></div>
+        </div>
+    </div>
+
+    <div id="caption-input-overlay" class="modal-overlay hidden">
+        <div class="modal-box-card">
+            <div class="caption-preview-wrap hidden" id="caption-preview-box">
+                <div class="caption-preview-inner">
+                    <div class="media-shadow-box caption-preview-shadow-box" id="caption-preview-shadow">
+                        <img id="caption-preview-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Prize Preview" class="img-loading" onload="this.classList.remove('img-loading')">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group top-space-btn">
+                <input type="text" id="caption-input-field" placeholder="Set Your Caption">
+            </div>
+            <div class="dual-btn-row">
+                <button class="btn btn-secondary-soft btn-sm" onclick="cancelCaptionInput()">CANCEL</button>
+                <button class="btn btn-action-green btn-sm" onclick="confirmCaptionInput()">CONFIRM</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="link-input-overlay" class="modal-overlay hidden">
+        <div class="modal-box-card">
+            <h3>PASTE IMAGE LINK</h3>
+            <p class="modal-body-text">Paste a direct GitHub raw (or any hosted) image URL.</p>
+            <div class="form-group top-space-btn">
+                <input type="text" id="link-input-field" placeholder="https://raw.githubusercontent.com/">
+            </div>
+            <div class="dual-btn-row">
+                <button class="btn btn-secondary-soft btn-sm" onclick="cancelLinkInput()">CANCEL</button>
+                <button class="btn btn-action-green btn-sm" onclick="confirmLinkInput()">APPLY LINK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-panel-view" class="admin-layout hidden">
+
+        <header class="admin-header-bar">
+            <h1 class="admin-title-panel">ADMIN PANEL 1</h1>
+        </header>
+
+        <div class="bottom-tab-content active">
+            <div class="home-section-card">
+                <nav class="segmented-tabs prize-nav-grid" id="prize-segmented-tabs">
+                    <button class="segment-btn nav-grid-btn active" onclick="switchPrizeSubTab('latest')">LATEST PRIZE</button>
+                    <button class="segment-btn nav-grid-btn" onclick="switchPrizeSubTab('past')">PAST PRIZE</button>
+                    <button class="segment-btn nav-grid-btn" onclick="switchPrizeSubTab('notice')">NOTICE EDIT</button>
+                    <button class="segment-btn nav-grid-btn" onclick="switchPrizeSubTab('elements')">EDIT ELEMENTS</button>
+                </nav>
+            </div>
+            <div class="home-section-card top-space-btn">
+                <div id="prize-sub-latest" class="prize-sub-tab active">
+                    <div class="section-title-bar">LATEST PRIZE</div>
+
+                    <div class="prize-preview-card">
+                        <div class="media-shadow-box is-empty">
+                            <img id="admin-prize-preview-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Preview image" class="img-loading" onload="this.classList.remove('img-loading')">
+                            <div class="media-placeholder-icon">
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.205 3h11.59c1.114 0 1.519.116 1.926.334.407.218.727.538.945.945.218.407.334.811.334 1.926v7.51l-4.391-4.053a1.5 1.5 0 0 0-2.265.27l-3.13 4.695-2.303-1.48a1.5 1.5 0 0 0-1.96.298L3.005 18.15A12.98 12.98 0 0 1 3 17.795V6.205c0-1.115.116-1.519.334-1.926.218-.407.538-.727.945-.945C4.686 3.116 5.09 3 6.205 3zm9.477 8.53L21 16.437v1.357c0 1.114-.116 1.519-.334 1.926a2.272 2.272 0 0 1-.945.945c-.407.218-.811.334-1.926.334H6.205c-1.115 0-1.519-.116-1.926-.334a2.305 2.305 0 0 1-.485-.345L8.2 15.067l2.346 1.508a1.5 1.5 0 0 0 2.059-.43l3.077-4.616zM7.988 6C6.878 6 6 6.832 6 7.988 6 9.145 6.879 10 7.988 10 9.121 10 10 9.145 10 7.988 10 6.832 9.121 6 7.988 6z" fill="#ffffff"></path></svg>
+                            </div>
+                        </div>
+                        <div class="prize-preview-info">
+                            <p id="admin-prize-preview-cap">Loading...</p>
+                            <div class="live-tag-row">
+                                <span class="live-preview-tag">LIVE PREVIEW <span class="live-dot"></span></span>
+                                <span id="latest-status-indicator" class="state-indicator hidden"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="edit-block">
+                        <div class="image-action-row">
+                            <button type="button" class="image-action-btn" onclick="event.stopPropagation(); document.getElementById('admin-input-img-file').click();">
+                                <svg viewBox="0 0 24 24" width="30" height="30" fill="#C1E1FF"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                                <span>UPLOAD</span>
+                            </button>
+                            <input type="file" id="admin-input-img-file" accept="image/*" class="hidden-file-input-offscreen" onchange="handleCloudinaryUpload(this, 'latest')">
+                            <button type="button" class="image-action-btn" onclick="event.stopPropagation(); openLinkInput('latest');">
+                                <svg viewBox="0 0 24 24" width="30" height="30" fill="#C1E1FF"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                                <span>LINK</span>
+                            </button>
+                            <button type="button" class="image-action-btn" onclick="event.stopPropagation(); removeImageAsset('latest');">
+                                <svg viewBox="0 0 24 24" width="30" height="30" fill="#FF3B30"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                <span>REMOVE</span>
+                            </button>
+                        </div>
+                        <div id="upload-progress-latest" class="upload-progress-container hidden">
+                            <div class="progress-bar-track"><div id="progress-bar-fill-latest" class="progress-bar-fill"></div></div>
+                            <div class="progress-stats">
+                                <span id="progress-percent-latest">0%</span>
+                                <span id="progress-speed-latest">0 KB/s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="edit-block">
+                        <h3 class="edit-block-heading">CAPTION</h3>
+                        <div class="caption-edit-row">
+                            <input type="text" id="admin-input-caption" placeholder="EDIT CAPTION">
+                            <button class="icon-mini-btn save-mini" title="Save Caption to Live Preview" onclick="stageCaptionPreviewLocally()">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                            </button>
+                            <button class="icon-mini-btn del-mini" title="Clear Caption from Live Preview" onclick="clearCaptionPreviewLocally()">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-action-green full-save-btn" onclick="saveActivePrizeData()">SAVE</button>
+                </div>
+
+                <div id="prize-sub-past" class="prize-sub-tab hidden">
+                    <div class="section-title-bar">PAST PRIZE</div>
+
+                    <div class="past-prize-toolbar" id="past-prize-toolbar">
+                        <button type="button" class="past-toolbar-btn" id="past-prize-upload-btn"
+                            onclick="addPastPrizeViaUpload()"
+                            ondragover="event.preventDefault(); event.stopPropagation(); this.classList.add('drag-active');"
+                            ondragleave="event.preventDefault(); event.stopPropagation(); this.classList.remove('drag-active');"
+                            ondrop="event.preventDefault(); event.stopPropagation(); this.classList.remove('drag-active'); handlePastPrizeImageDrop(event);">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="#C1E1FF"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                            <span>UPLOAD IMAGE</span>
+                        </button>
+                        <button type="button" class="past-toolbar-btn" onclick="addPastPrizeViaLink()">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="#C1E1FF"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                            <span>IMAGE URL LINK</span>
+                        </button>
+                    </div>
+
+                    <input type="file" id="past-item-file-shared" accept="image/*" class="hidden-file-input-offscreen" onchange="handlePastItemFileChosen(this)">
+
+                    <div id="upload-progress-past-item" class="upload-progress-container hidden">
+                        <div class="progress-bar-track"><div id="progress-bar-fill-past-item" class="progress-bar-fill"></div></div>
+                        <div class="progress-stats">
+                            <span id="progress-percent-past-item">0%</span>
+                            <span id="progress-speed-past-item">0 KB/s</span>
+                        </div>
+                    </div>
+
+                    <div id="past-prize-list-container" class="past-prize-list top-space-btn"></div>
+
+                    <button class="btn btn-secondary-soft see-more-btn hidden" id="past-prize-seemore-btn" onclick="togglePastPrizeSeeMore()">SEE MORE</button>
+                </div>
+
+                <div id="prize-sub-notice" class="prize-sub-tab hidden">
+                    <div class="section-title-bar">NOTICE EDIT</div>
+
+                    <input type="file" id="notice-item-file-shared" accept="image/*" class="hidden-file-input-offscreen" onchange="handleCloudinaryUpload(this, 'notice-item')">
+
+                    <div id="notice-slots-container" class="notice-slots-container"></div>
+
+                    <div class="add-more-container">
+                        <button type="button" class="btn btn-secondary-soft add-more-btn" onclick="addNoticeSlot()">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                            <span>ADD MORE</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="prize-sub-elements" class="prize-sub-tab hidden">
+                    <div class="section-title-bar">EDIT ELEMENTS</div>
+                    <div class="section-title-bar" style="font-size:1.1rem;margin-top:-2px;">CREATOR ICON CHANGE</div>
+
+                    <div class="prize-preview-card creator-preview-card">
+                        <div class="creator-preview-frame is-empty" id="creator-preview-frame">
+                            <img id="admin-creator-preview-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Creator Icon" class="img-loading" onload="this.classList.remove('img-loading')">
+                            <div class="media-placeholder-icon"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.205 3h11.59c1.114 0 1.519.116 1.926.334.407.218.727.538.945.945.218.407.334.811.334 1.926v7.51l-4.391-4.053a1.5 1.5 0 0 0-2.265.27l-3.13 4.695-2.303-1.48a1.5 1.5 0 0 0-1.96.298L3.005 18.15A12.98 12.98 0 0 1 3 17.795V6.205c0-1.115.116-1.519.334-1.926.218-.407.538-.727.945-.945C4.686 3.116 5.09 3 6.205 3zm9.477 8.53L21 16.437v1.357c0 1.114-.116 1.519-.334 1.926a2.272 2.272 0 0 1-.945.945c-.407.218-.811.334-1.926.334H6.205c-1.115 0-1.519-.116-1.926-.334a2.305 2.305 0 0 1-.485-.345L8.2 15.067l2.346 1.508a1.5 1.5 0 0 0 2.059-.43l3.077-4.616zM7.988 6C6.878 6 6 6.832 6 7.988 6 9.145 6.879 10 7.988 10 9.121 10 10 9.145 10 7.988 10 6.832 9.121 6 7.988 6z" fill="#ffffff"></path></svg></div>
+                        </div>
+                        <div class="prize-preview-info">
+                            <div class="live-tag-row">
+                                <span class="live-preview-tag">LIVE <span class="live-dot"></span></span>
+                                <span id="creator-ratio-used-badge" class="used-badge hidden">USED</span>
+                                <span id="creator-status-indicator" class="state-indicator hidden"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="edit-block">
+                        <h3 class="edit-block-heading">CUSTOM RATIO SET</h3>
+                        <div class="ratio-set-row" id="creator-ratio-row">
+                            <button class="ratio-toggle-btn" data-ratio="1/1" onclick="selectCreatorRatio('1/1')">1:1</button>
+                            <button class="ratio-toggle-btn" data-ratio="16/9" onclick="selectCreatorRatio('16/9')">16:9</button>
+                            <button class="ratio-toggle-btn" data-ratio="3/4" onclick="selectCreatorRatio('3/4')">3:4</button>
+                        </div>
+                    </div>
+
+                    <div class="edit-block">
+                        <h3 class="edit-block-heading">IMAGE</h3>
+                        <div class="image-action-row">
+                            <button type="button" class="image-action-btn" onclick="event.stopPropagation(); document.getElementById('admin-input-creator-file').click();">
+                                <svg viewBox="0 0 24 24" width="30" height="30" fill="#C1E1FF"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.36 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                                <span>UPLOAD</span>
+                            </button>
+                            <input type="file" id="admin-input-creator-file" accept="image/*" class="hidden-file-input-offscreen" onchange="handleCloudinaryUpload(this, 'creator')">
+                            <button type="button" class="image-action-btn" onclick="event.stopPropagation(); openLinkInput('creator');">
+                                <svg viewBox="0 0 24 24" width="30" height="30" fill="#C1E1FF"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                                <span>LINK</span>
+                            </button>
+                            <button type="button" class="image-action-btn" onclick="event.stopPropagation(); removeImageAsset('creator');">
+                                <svg viewBox="0 0 24 24" width="30" height="30" fill="#FF3B30"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                <span>REMOVE</span>
+                            </button>
+                        </div>
+                        <div id="upload-progress-creator" class="upload-progress-container hidden">
+                            <div class="progress-bar-track"><div id="progress-bar-fill-creator" class="progress-bar-fill"></div></div>
+                            <div class="progress-stats">
+                                <span id="progress-percent-creator">0%</span>
+                                <span id="progress-speed-creator">0 KB/s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-action-green full-save-btn" onclick="saveCreatorIconData()">SAVE</button>
+                </div>
+            </div>
+        </div>
+        <nav class="bottom-nav-bar">
+            <a class="bottom-nav-btn" id="bottom-nav-home" href="../index.html" title="Home">
+                <svg viewBox="0 0 48 48" width="24" height="24" fill="currentColor"><path d="M24,2a1.1,1.1,0,0,0-.7.3L4.6,19.2A2,2,0,0,0,4,20.7V44H19V27.9H29V44H44V20.7a2,2,0,0,0-.6-1.5L24.7,2.3A1.1,1.1,0,0,0,24,2Z"/></svg>
+            </a>
+            <a class="bottom-nav-btn active" id="bottom-nav-edit" href="edit_index.html" title="Edit">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </a>
+            <a class="bottom-nav-btn" id="bottom-nav-grandprizes" href="../prize/prize_index.html" title="Prize">
+                <svg viewBox="0 0 31.945 31.945" width="24" height="24" fill="currentColor"><path d="M20.036,19.832c8.371-4.185,12.262-7.969,11.884-11.546c-0.309-2.934-3.354-4.633-5.473-5.471 c0.021-0.32,0.031-0.618,0.031-0.903c0-0.067-21.041-0.034-21.041,0.033c0,0.278,0.011,0.572,0.031,0.887 C3.358,3.67,0.333,5.366,0.025,8.288c-0.377,3.57,3.498,7.343,11.835,11.522c0.462,0.523,0.941,0.979,1.434,1.343l-0.531,5.454 c-1.541,0.148-2.782,0.387-3.628,0.591C8.31,27.395,7.7,28.132,7.7,28.98v1.09h16.474v-1.104c0-0.845-0.604-1.58-1.425-1.785 c-0.839-0.207-2.062-0.441-3.619-0.59l-0.504-5.441C19.109,20.793,19.581,20.347,20.036,19.832z M26.111,5.422 c1.527,0.693,3.164,1.77,3.306,3.132c0.098,0.928-0.479,3.234-6.575,6.887C24.396,12.266,25.556,8.506,26.111,5.422z M8.667,3.629 c0.638,0,1.154,0.515,1.154,1.152c0,0.637-0.516,1.154-1.154,1.154S7.513,5.418,7.513,4.781C7.513,4.143,8.029,3.629,8.667,3.629z M2.528,8.553c0.142-1.354,1.76-2.425,3.279-3.12c0.554,3.071,1.705,6.815,3.254,9.98C3.005,11.777,2.433,9.478,2.528,8.553z M12.856,16.541c-0.146,0.062-0.297,0.09-0.445,0.09c-0.454,0-0.885-0.27-1.07-0.715c-1.485-3.562-2.781-7.562-2.835-7.73 c-0.197-0.61,0.136-1.264,0.746-1.46c0.611-0.199,1.262,0.137,1.458,0.744c0.014,0.041,1.323,4.082,2.769,7.555 C13.726,15.615,13.447,16.295,12.856,16.541z"/></svg>
+            </a>
+        </nav>
+
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, updateDoc, deleteDoc, query, onSnapshot, where, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAoketoRHRp4ko6zDr5nDN62EuvBluF0SE",
+            authDomain: "tzerone-giveaway.firebaseapp.com",
+            projectId: "tzerone-giveaway",
+            storageBucket: "tzerone-giveaway.firebasestorage.app",
+            messagingSenderId: "79301530556",
+            appId: "1:79301530556:web:4290ce069b76b9cd4ad1b9",
+            measurementId: "G-E738EB97XK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        window.FirebaseBridge = { db, auth, doc, getDoc, setDoc, collection, addDoc, getDocs, updateDoc, deleteDoc, query, onSnapshot, where, writeBatch, onAuthStateChanged, signInWithEmailAndPassword, setPersistence, browserSessionPersistence };
+    </script>
+    <script type="module" src="edit_script.js"></script>
+</body>
+</html>
